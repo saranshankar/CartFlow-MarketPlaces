@@ -5,7 +5,6 @@ test.describe('CartFlow 3.0 - Global Search Automation', () => {
     await page.goto('/');
     // Clear storage for clean test isolation
     await page.evaluate(() => localStorage.clear());
-    await page.goto('/');
   });
 
   test('SEARCH-01: Search by product name displays matching product', async ({ page }) => {

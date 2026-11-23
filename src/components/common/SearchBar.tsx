@@ -124,8 +124,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             }}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
+            role="combobox"
             aria-label="Search marketplace products"
-            aria-expanded={isOpen}
+            aria-expanded={Boolean(isOpen && query.trim().length > 0)}
             aria-autocomplete="list"
             aria-controls="search-autocomplete-list"
             data-testid="search-input"

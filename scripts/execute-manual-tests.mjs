@@ -149,6 +149,36 @@ async function executeManualQAScenarios() {
   await pdpMobilePage.screenshot({ path: path.join(screenshotsDir, 'pdp-mobile-view.png'), fullPage: true });
   await pdpMobileCtx.close();
 
+  // Capture Additional Key Pages for Phase 4 Documentation
+  console.log('\n--- Capturing Explore, Categories, Wishlist, Cart Drawer & Checkout ---');
+  const appCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const appPage = await appCtx.newPage();
+
+  // Explore
+  await appPage.goto('http://localhost:4173/explore');
+  await appPage.screenshot({ path: path.join(screenshotsDir, 'explore-page.png'), fullPage: true });
+
+  // Categories
+  await appPage.goto('http://localhost:4173/categories');
+  await appPage.screenshot({ path: path.join(screenshotsDir, 'categories-page.png'), fullPage: true });
+
+  // Add an item to populate wishlist and cart
+  await appPage.goto('http://localhost:4173/shop');
+  await appPage.click('[aria-label="Add Aero Wireless Headphones to wishlist"]');
+  await appPage.goto('http://localhost:4173/wishlist');
+  await appPage.screenshot({ path: path.join(screenshotsDir, 'wishlist-page.png'), fullPage: true });
+
+  // Add to cart and capture cart drawer
+  await appPage.goto('http://localhost:4173/product/prod-aero-headphones');
+  await appPage.click('[data-testid="pdp-add-to-cart"]');
+  await appPage.waitForSelector('[data-testid="cart-drawer"]');
+  await appPage.screenshot({ path: path.join(screenshotsDir, 'cart-drawer.png') });
+
+  // Checkout page
+  await appPage.goto('http://localhost:4173/checkout');
+  await appPage.screenshot({ path: path.join(screenshotsDir, 'checkout-page.png'), fullPage: true });
+  await appCtx.close();
+
   // Copy phase3 automated screenshots to artifacts/screenshots
   const phase3EvidenceDir = path.resolve(process.cwd(), 'evidence/phase3');
   if (fs.existsSync(phase3EvidenceDir)) {
@@ -177,6 +207,11 @@ async function executeManualQAScenarios() {
       'mobile-view.png',
       'pdp-desktop-view.png',
       'pdp-mobile-view.png',
+      'explore-page.png',
+      'categories-page.png',
+      'wishlist-page.png',
+      'cart-drawer.png',
+      'checkout-page.png',
       'successful-checkout.png',
       'missing-name-validation.png',
       'quantity-update.png',

@@ -75,8 +75,8 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 data-testid="customer-name-input"
                 className={`w-full px-4 py-3.5 rounded-2xl bg-sand/40 border text-charcoal placeholder-olive/60 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 ${
                   errorMessage
-                    ? 'border-terracottared-600 focus-visible:ring-terracottared-600 bg-terracottared-50/50'
-                    : 'border-warmgrey focus-visible:ring-forest-700 hover:border-olive/50'
+                    ? 'border-red-500 focus-visible:ring-red-500 bg-red-50/50'
+                    : 'border-slate-200 focus-visible:ring-cyan-500 hover:border-slate-300'
                 } ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               />
             </div>
@@ -97,8 +97,8 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
               data-testid="checkout-submit-button"
               className={`w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full font-semibold text-xs uppercase tracking-widest text-ivory transition-all shadow-warm hover:shadow-warm-lg ${
                 isSubmitting
-                  ? 'bg-forest-800/70 cursor-not-allowed opacity-75'
-                  : 'bg-forest-800 hover:bg-forest-900 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-700'
+                  ? 'bg-meridian-900/70 cursor-not-allowed opacity-75'
+                  : 'bg-meridian-900 hover:bg-meridian-950 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500'
               }`}
             >
               {isSubmitting ? (

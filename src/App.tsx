@@ -25,6 +25,14 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-canvas text-slate-800 flex flex-col font-sans selection:bg-cyan-100 selection:text-meridian-950">
+      {/* Skip to Main Content Link for Keyboard Accessibility (WCAG 2.4.1) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-meridian-900 focus:text-white focus:rounded-xl focus:shadow-warm-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 font-bold text-xs uppercase tracking-wider"
+      >
+        Skip to main content
+      </a>
+
       {/* Accessible Live Region for Screen Readers */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {checkoutStatus === 'ORDER_CONFIRMED' && confirmedOrder
@@ -39,7 +47,7 @@ const AppContent: React.FC = () => {
       <MarketplaceHeader />
       <CartDrawer />
 
-      <main className="flex-1 w-full pb-16 md:pb-0">
+      <main id="main-content" tabIndex={-1} className="flex-1 w-full pb-16 md:pb-0 outline-none">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/shop" element={<ShopPage />} />
