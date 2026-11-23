@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "name": "Add both products",
+    "passed": true,
+    "details": "Cart item rows count: 2"
+  },
+  {
+    "id": 2,
+    "name": "Add same product multiple times updates quantity",
+    "passed": true,
+    "details": "Aero Headphones qty: 2"
+  },
+  {
+    "id": 3,
+    "name": "Increase quantity via stepper",
+    "passed": true,
+    "details": "Backpack qty: 2"
+  },
+  {
+    "id": 4,
+    "name": "Decrease quantity and check boundary at 1",
+    "passed": true,
+    "details": "Backpack qty: 1, decrement disabled: true"
+  },
+  {
+    "id": 5,
+    "name": "Remove one product",
+    "passed": true,
+    "details": "Items remaining: 1"
+  },
+  {
+    "id": 6,
+    "name": "Remove final product displays empty cart state",
+    "passed": true,
+    "details": "Empty cart visible: true"
+  },
+  {
+    "id": 7,
+    "name": "Check exact line totals",
+    "passed": true,
+    "details": "Headphones: ₹4,497 (exp ₹4,497), Backpack: ₹1,998 (exp ₹1,998)"
+  },
+  {
+    "id": 8,
+    "name": "Check exact order total",
+    "passed": true,
+    "details": "Displayed Order Total: ₹6,495 (exp ₹6,495)"
+  },
+  {
+    "id": 9,
+    "name": "Submit blank name prevents checkout and shows error",
+    "passed": true,
+    "details": "Error: \"Please enter your name.\""
+  },
+  {
+    "id": 10,
+    "name": "Submit whitespace-only name preserves input and shows error",
+    "passed": true,
+    "details": "Preserved value: \"    \", Error: \"Customer name cannot consist only of whitespace.\""
+  },
+  {
+    "id": 11,
+    "name": "Enter valid name clears inline error",
+    "passed": true,
+    "details": "Error visible: false"
+  },
+  {
+    "id": 12,
+    "name": "Complete checkout shows confirmation with customer and total",
+    "passed": true,
+    "details": "Customer: Priya Sharma, Total: ₹6,495"
+  },
+  {
+    "id": 13,
+    "name": "Inspect confirmation reference pattern",
+    "passed": true,
+    "details": "Generated reference: CF-20261123-B264"
+  },
+  {
+    "id": 14,
+    "name": "Rapid double-click prevention results in single confirmation",
+    "passed": true,
+    "details": "Confirmations count: 1"
+  }
+]
