@@ -16,25 +16,25 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   getItemQuantity,
   onAddToCart,
   title = "Curated Synthetic Collection",
-  subtitle = "Two timeless pieces crafted for daily performance and elegance."
+  subtitle = "Two verified essentials crafted for daily performance, durability, and elegance."
 }) => {
   return (
     <section aria-labelledby="catalog-heading" className="w-full">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-warmgrey gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-slate-200 gap-4">
         <div>
-          <div className="flex items-center gap-1.5 text-terracotta-500 text-xs uppercase tracking-widest font-semibold mb-1">
-            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Essential Rituals</span>
+          <div className="flex items-center gap-1.5 text-cyan-600 text-xs uppercase tracking-wider font-extrabold mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-500" aria-hidden="true" />
+            <span>Marketplace Catalog</span>
           </div>
-          <h2 id="catalog-heading" className="font-serif text-3xl sm:text-4xl font-bold text-charcoal">
+          <h2 id="catalog-heading" className="font-display text-3xl sm:text-4xl font-extrabold text-meridian-950">
             {title}
           </h2>
-          <p className="text-sm text-olive mt-1.5 max-w-xl">
+          <p className="text-sm text-slate-500 mt-1.5 max-w-xl font-normal">
             {subtitle}
           </p>
         </div>
-        <span className="self-start sm:self-auto text-xs font-semibold px-3 py-1 rounded-full bg-sand text-forest-900 border border-warmgrey">
-          {products.length} Products
+        <span className="self-start sm:self-auto text-xs font-bold px-3.5 py-1 rounded-full bg-slate-100 text-meridian-950 border border-slate-200">
+          {products.length} Verified Products
         </span>
       </div>
 

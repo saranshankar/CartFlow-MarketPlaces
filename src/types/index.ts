@@ -31,6 +31,15 @@ export interface ValidationState {
   };
 }
 
+export interface Category {
+  slug: string;
+  name: string;
+  description: string;
+  tagline: string;
+  iconName: string;
+  productIds: string[];
+}
+
 export type CheckoutStatus =
   | 'EMPTY_CART'
   | 'CART_POPULATED'

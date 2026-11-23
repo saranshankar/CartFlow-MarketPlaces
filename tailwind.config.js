@@ -7,84 +7,124 @@ export default {
   theme: {
     extend: {
       colors: {
+        meridian: {
+          DEFAULT: '#0F1E36',
+          950: '#0A1424', // Primary Hover
+          900: '#0F1E36', // Primary Brand Meridian Navy
+          800: '#172B4D',
+          700: '#1E3A66',
+          600: '#274B80',
+          500: '#325F9E',
+          100: '#E9EFF7',
+          50: '#F1F5F9',
+        },
+        slate: {
+          900: '#1A202C',
+          800: '#2D3748',
+          700: '#4A5568', // Secondary
+          600: '#4A5568',
+          500: '#718096', // Muted text
+          400: '#A0AEC0',
+          300: '#CBD5E0',
+          200: '#E2E8F0', // Border
+          100: '#EDF2F7',
+          50: '#F7FAFC',
+        },
+        cyan: {
+          DEFAULT: '#00A3C4',
+          700: '#007994',
+          600: '#008DAA',
+          500: '#00A3C4', // Electric Cyan Accent
+          400: '#26C6DA',
+          100: '#E0F7FA',
+          50: '#F0FBFC',
+        },
+        emerald: {
+          DEFAULT: '#10B981',
+          700: '#047857',
+          600: '#059669',
+          500: '#10B981', // Success
+          100: '#D1FAE5',
+          50: '#ECFDF5',
+        },
+        canvas: {
+          DEFAULT: '#F8FAFC',
+          50: '#FFFFFF',
+          100: '#F8FAFC',
+          200: '#F1F5F9',
+        },
+        card: '#FFFFFF',
+        // Aliases for compatibility
         ivory: {
-          DEFAULT: '#F7F4ED',
-          50: '#FDFCF9',
-          100: '#F7F4ED',
-          200: '#EFE9DE',
+          DEFAULT: '#F8FAFC',
+          50: '#FFFFFF',
+          100: '#F8FAFC',
+          200: '#F1F5F9',
         },
         sand: {
-          DEFAULT: '#EDE7DC',
-          50: '#FAF8F5',
-          100: '#EDE7DC',
-          200: '#E1D9CA',
-          300: '#D5CBB8',
+          DEFAULT: '#F1F5F9',
+          50: '#FFFFFF',
+          100: '#F8FAFC',
+          200: '#F1F5F9',
+          300: '#E2E8F0',
         },
         forest: {
-          DEFAULT: '#245343',
-          900: '#112A22',
-          800: '#183D32', // Primary Brand Deep Forest Green
-          700: '#245343', // Primary Action Forest Green
-          600: '#2F6753',
-          500: '#3D826A',
-          100: '#E5EFEA',
-          50: '#F0F6F3',
-        },
-        terracotta: {
-          DEFAULT: '#C87552',
-          700: '#A95B3B',
-          600: '#B86745',
-          500: '#C87552', // Accent Terracotta
-          400: '#D98967',
-          100: '#F8ECE7',
-          50: '#FCF5F2',
-        },
-        beige: {
-          DEFAULT: '#D8C8A8',
-          600: '#B8A37C',
-          500: '#D8C8A8',
-          100: '#F5F1E8',
+          DEFAULT: '#0F1E36',
+          900: '#0A1424',
+          800: '#0F1E36',
+          700: '#172B4D',
+          600: '#1E3A66',
+          500: '#274B80',
+          100: '#E9EFF7',
+          50: '#F1F5F9',
         },
         charcoal: {
-          DEFAULT: '#292A26',
-          900: '#1E1F1C',
-          800: '#292A26', // Primary text
-          700: '#3D3E3A',
+          DEFAULT: '#1A202C',
+          900: '#0F172A',
+          800: '#1E293B',
+          700: '#334155',
         },
         olive: {
-          DEFAULT: '#77796F',
-          700: '#5F6057',
-          600: '#77796F', // Secondary text
-          500: '#8E9085',
-          400: '#A8AAA0',
+          DEFAULT: '#718096',
+          700: '#4A5568',
+          600: '#718096',
+          500: '#718096',
+          400: '#A0AEC0',
         },
         warmgrey: {
-          DEFAULT: '#E1DED5',
-          200: '#E1DED5', // Borders
-          100: '#ECE9E2',
+          DEFAULT: '#E2E8F0',
+          200: '#E2E8F0',
+          100: '#F1F5F9',
         },
         naturalgreen: {
-          DEFAULT: '#397653',
-          700: '#2C5E41',
-          600: '#397653', // Success
-          100: '#E9F3ED',
+          DEFAULT: '#10B981',
+          700: '#047857',
+          600: '#10B981',
+          100: '#D1FAE5',
+        },
+        terracotta: {
+          DEFAULT: '#00A3C4',
+          500: '#00A3C4',
         },
         terracottared: {
-          DEFAULT: '#B94C43',
-          700: '#9B3931',
-          600: '#B94C43', // Error
-          100: '#F8ECEB',
+          DEFAULT: '#EF4444',
+          700: '#B91C1C',
+          600: '#DC2626',
+          100: '#FEE2E2',
         },
       },
       fontFamily: {
-        serif: ['"Playfair Display"', 'Georgia', 'Cambria', '"Times New Roman"', 'serif'],
-        sans: ['"DM Sans"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '"DM Sans"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        display: ['"Space Grotesk"', '"Plus Jakarta Sans"', 'sans-serif'],
+        serif: ['"Space Grotesk"', '"Playfair Display"', 'Georgia', 'serif'],
       },
       boxShadow: {
-        'warm-sm': '0 1px 3px rgba(41, 42, 38, 0.05)',
-        'warm': '0 4px 16px rgba(41, 42, 38, 0.06), 0 1px 3px rgba(41, 42, 38, 0.04)',
-        'warm-lg': '0 12px 32px rgba(41, 42, 38, 0.08), 0 2px 6px rgba(41, 42, 38, 0.04)',
-        'warm-xl': '0 20px 48px rgba(41, 42, 38, 0.12), 0 4px 12px rgba(41, 42, 38, 0.06)',
+        'warm-sm': '0 1px 2px rgba(15, 30, 54, 0.04)',
+        'warm': '0 4px 12px rgba(15, 30, 54, 0.05), 0 1px 2px rgba(15, 30, 54, 0.03)',
+        'warm-lg': '0 10px 24px rgba(15, 30, 54, 0.08), 0 2px 6px rgba(15, 30, 54, 0.04)',
+        'warm-xl': '0 20px 40px rgba(15, 30, 54, 0.12), 0 4px 10px rgba(15, 30, 54, 0.05)',
+        'meridian': '0 8px 20px rgba(15, 30, 54, 0.15)',
+        'cyan-glow': '0 0 15px rgba(0, 163, 196, 0.35)',
       },
     },
   },
