@@ -135,6 +135,20 @@ async function executeManualQAScenarios() {
   await mobilePage.screenshot({ path: path.join(screenshotsDir, 'mobile-view.png'), fullPage: true });
   await mobileCtx.close();
 
+  // Capture Product Detail Page (PDP) Views
+  console.log('\n--- Capturing Product Detail Page (PDP) Screenshots ---');
+  const pdpDesktopCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const pdpDesktopPage = await pdpDesktopCtx.newPage();
+  await pdpDesktopPage.goto('http://localhost:4173/product/prod-aero-headphones');
+  await pdpDesktopPage.screenshot({ path: path.join(screenshotsDir, 'pdp-desktop-view.png'), fullPage: true });
+  await pdpDesktopCtx.close();
+
+  const pdpMobileCtx = await browser.newContext({ viewport: { width: 375, height: 812 } });
+  const pdpMobilePage = await pdpMobileCtx.newPage();
+  await pdpMobilePage.goto('http://localhost:4173/product/prod-aero-headphones');
+  await pdpMobilePage.screenshot({ path: path.join(screenshotsDir, 'pdp-mobile-view.png'), fullPage: true });
+  await pdpMobileCtx.close();
+
   // Copy phase3 automated screenshots to artifacts/screenshots
   const phase3EvidenceDir = path.resolve(process.cwd(), 'evidence/phase3');
   if (fs.existsSync(phase3EvidenceDir)) {
@@ -161,6 +175,8 @@ async function executeManualQAScenarios() {
       'confirmation-screen.png',
       'desktop-view.png',
       'mobile-view.png',
+      'pdp-desktop-view.png',
+      'pdp-mobile-view.png',
       'successful-checkout.png',
       'missing-name-validation.png',
       'quantity-update.png',

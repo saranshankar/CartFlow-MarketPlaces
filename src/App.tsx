@@ -18,6 +18,7 @@ import { WishlistPage } from './pages/WishlistPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { ConfirmationPage } from './pages/ConfirmationPage';
+import { ProductDetailPage } from './pages/ProductDetailPage';
 
 const AppContent: React.FC = () => {
   const { itemCount, total, confirmedOrder, checkoutStatus, validationErrors } = useCartContext();
@@ -45,6 +46,7 @@ const AppContent: React.FC = () => {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/category/:slug" element={<CategoryDetailPage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />

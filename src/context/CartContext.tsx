@@ -5,7 +5,7 @@ import { validateCheckout } from '../utils/validation';
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, delta: number) => void;
   clearCart: () => void;
@@ -98,15 +98,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [confirmedOrder]);
 
   // Cart operations
-  const addToCart = useCallback((product: Product) => {
+  const addToCart = useCallback((product: Product, quantityToAdd: number = 1) => {
+    const qty = Math.max(1, quantityToAdd);
     setItems((prevItems) => {
       const existingIndex = prevItems.findIndex((item) => item.product.id === product.id);
       if (existingIndex > -1) {
         return prevItems.map((item, idx) =>
-          idx === existingIndex ? { ...item, quantity: item.quantity + 1 } : item
+          idx === existingIndex ? { ...item, quantity: item.quantity + qty } : item
         );
       }
-      return [...prevItems, { product, quantity: 1 }];
+      return [...prevItems, { product, quantity: qty }];
     });
     // Open drawer on add for immediate tactile customer feedback
     setIsDrawerOpen(true);

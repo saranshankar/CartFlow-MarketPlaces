@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Check, Star, Heart, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, Check, Heart, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { Product } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import { useWishlist } from '../../context/WishlistContext';
@@ -122,26 +123,37 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           />
         </button>
 
-        {renderProductVisual()}
+        <Link
+          to={`/product/${product.id}`}
+          data-testid={`product-link-${product.id}`}
+          className="w-full h-full flex items-center justify-center"
+          aria-label={`View product details for ${product.name}`}
+        >
+          {renderProductVisual()}
+        </Link>
       </div>
 
       {/* Product Meta */}
       <div className="flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
-            <div className="flex items-center gap-1.5 text-slate-700">
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
-              <span className="font-bold">4.9</span>
-              <span className="text-slate-400 text-[11px]">(1,420 reviews)</span>
-            </div>
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-cyan-700 bg-cyan-50 px-2.5 py-0.5 rounded-full border border-cyan-100">
+              Verified Specification
+            </span>
             <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
               {product.category}
             </span>
           </div>
 
-          <h3 className="font-display text-xl font-bold text-meridian-950 group-hover:text-cyan-700 transition-colors leading-snug">
-            {product.name}
-          </h3>
+          <Link
+            to={`/product/${product.id}`}
+            className="group/title block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 rounded"
+          >
+            <h3 className="font-display text-xl font-bold text-meridian-950 group-hover/title:text-cyan-700 transition-colors leading-snug flex items-center justify-between">
+              <span>{product.name}</span>
+              <ArrowUpRight className="w-4 h-4 opacity-0 group-hover/title:opacity-100 transition-opacity text-cyan-600" aria-hidden="true" />
+            </h3>
+          </Link>
 
           <p className="text-xs text-slate-600 mt-2 leading-relaxed line-clamp-3">
             {product.description}
@@ -149,7 +161,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           <div className="flex items-center gap-2 mt-3 text-[11px] text-emerald-700 font-medium">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" aria-hidden="true" />
-            <span>In Stock • Ships in 24 Hours</span>
+            <span>Synthetic Catalog Item • Available for Demo</span>
           </div>
         </div>
 
@@ -203,3 +215,4 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     </article>
   );
 };
+
