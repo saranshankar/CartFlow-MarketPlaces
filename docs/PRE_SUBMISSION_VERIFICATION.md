@@ -11,12 +11,12 @@
 
 An un-sandboxed audit was performed using `npm audit --json`. The raw security scan identified 4 total advisories across dependencies:
 
-| Package | Severity | Dependency Type | Advisory Title & CWE | Fix Available | Impact Analysis on CartFlow 3.0 |
+| Package | Severity | Dependency Type | Advisory Title & CWE | Fix Available | Unresolved Risk & Architectural Context |
 |---|:---:|:---:|---|---|---|
-| **`vite`** | **High** | Development-only (`devDependencies`) | Path Traversal / Editor flags on Windows (GHSA-587h-7wmj-h5pm) | Major upgrade: `vite@8.3.8` (SemVer Major) | **Development-only.** Vite dev server is not bundled into production. Build output in `dist/` is pure static HTML/CSS/JS. |
-| **`esbuild`** | **Moderate** | Development-only (`devDependencies` via vite) | Dev server response disclosure (GHSA-67mh-4wv8-2f99) | Major upgrade via `vite@8.3.8` | **Development-only.** Internal bundler dependency; zero runtime exposure. |
-| **`react-router-dom`** | **Moderate** | Production (`dependencies`) | Open redirect via backslash in `<Link>` / `useNavigate` (GHSA-wrjc-x8rr-h8h6) | Major upgrade: `react-router-dom@7.18.6` (SemVer Major) | **Zero exploitability.** CartFlow routes are strictly hardcoded local application paths (`/`, `/shop`, `/cart`, `/checkout`, `/product/:id`). It never renders or navigates to user-controlled URLs. |
-| **`react-router`** | **Moderate** | Production (`dependencies` via `react-router-dom`) | Constructor injection via `deserializeErrors()` in SSR Hydration (GHSA-337j-9hxr-rhxg) | Major upgrade: `react-router-dom@7.18.6` (SemVer Major) | **Zero exploitability.** CartFlow is a client-side Single Page Application using `<BrowserRouter>` without Server-Side Rendering (SSR) hydration. `deserializeErrors()` is never called. |
+| **`vite`** | **High** | Development-only (`devDependencies`) | Path Traversal / Editor flags on Windows (GHSA-587h-7wmj-h5pm) | Major upgrade: `vite@8.3.8` (SemVer Major) | **Development Server Risk:** Vite dev server on Windows handles launch-editor flags with potential path traversal if run on an untrusted local network. Build output in `dist/` is static HTML/CSS/JS. |
+| **`esbuild`** | **Moderate** | Development-only (`devDependencies` via vite) | Dev server response disclosure (GHSA-67mh-4wv8-2f99) | Major upgrade via `vite@8.3.8` | **Dev Server Response Disclosure:** Malicious sites visited during local development could read dev server responses if local port CORS checks are bypassed. |
+| **`react-router-dom`** | **Moderate** | Production (`dependencies`) | Open redirect via backslash in `<Link>` / `useNavigate` (GHSA-wrjc-x8rr-h8h6) | Major upgrade: `react-router-dom@7.18.6` (SemVer Major) | **Production Library Vulnerability:** Vulnerable code path resides in installed React Router package. Currently mitigated at application level because CartFlow routes are static strings (`/`, `/shop`, `/cart`, `/checkout`, `/product/:id`). Residual risk remains if future code accepts dynamic user URLs. |
+| **`react-router`** | **Moderate** | Production (`dependencies` via `react-router-dom`) | Constructor injection via `deserializeErrors()` in SSR Hydration (GHSA-337j-9hxr-rhxg) | Major upgrade: `react-router-dom@7.18.6` (SemVer Major) | **Production Library Vulnerability:** Vulnerable `deserializeErrors()` exists in runtime package. Currently uninvoked because CartFlow is a client-side SPA (`<BrowserRouter>`). Residual risk exists if SSR hydration is added in the future. |
 
 ### Why `npm audit fix` was NOT Executed:
 Per explicit instruction (*"Do not blindly run `npm audit fix` or introduce breaking dependency changes"*):
@@ -177,12 +177,12 @@ The catalog contains strictly **two purchasable synthetic products**:
 ### D. Dependency Security Audit (`npm audit --json`)
 Raw audit output revealed 4 advisories (1 High, 3 Moderate):
 
-1. **`vite` (High):** GHSA-587h-7wmj-h5pm (Windows launch-editor path traversal). **Development-only (`devDependencies`).** Vite dev server is not deployed to production. Static output in `dist/` is pure static HTML/CSS/JS. Remediation requires major breaking upgrade to `vite@8.3.8`.
-2. **`esbuild` (Moderate):** GHSA-67mh-4wv8-2f99 (Dev server response disclosure). **Development-only (`devDependencies` via vite).** Internal bundler dependency.
-3. **`react-router-dom` (Moderate):** GHSA-wrjc-x8rr-h8h6 (Open redirect via backslash). **Production (`dependencies`).** **Zero exploitability:** All CartFlow routes are hardcoded local strings (`/`, `/shop`, `/cart`, `/checkout`, `/product/:id`). User-supplied URLs are never navigated or redirected.
-4. **`react-router` (Moderate):** GHSA-337j-9hxr-rhxg (Constructor injection in SSR hydration). **Production (`dependencies`).** **Zero exploitability:** CartFlow is a client-side SPA (`<BrowserRouter>`) without SSR hydration. `deserializeErrors()` is never executed.
+1. **`vite` (High - `GHSA-587h-7wmj-h5pm`):** Windows launch-editor path bypass. **Development-only (`devDependencies`).** Unresolved Risk: Local developer machine exposure if `npm run dev` is served in an untrusted network. Static assets in `dist/` do not bundle the dev server.
+2. **`esbuild` (Moderate - `GHSA-67mh-4wv8-2f99`):** Dev server response disclosure. **Development-only (`devDependencies` via vite).** Unresolved Risk: Development port response disclosure if visited by malicious external sites during active local development.
+3. **`react-router-dom` (Moderate - `GHSA-wrjc-x8rr-h8h6`):** Open redirect via backslash in `<Link>`/`useNavigate`. **Production (`dependencies`).** Unresolved Risk: Unpatched library code exists in production dependency tree. Currently mitigated by application architecture using only static internal route constants (`/`, `/shop`, `/cart`, etc.), but residual risk remains if dynamic URL handling is introduced.
+4. **`react-router` (Moderate - `GHSA-337j-9hxr-rhxg`):** Constructor injection in SSR hydration via `deserializeErrors()`. **Production (`dependencies`).** Unresolved Risk: Library vulnerability remains unresolved in installed package. Mitigated in current architecture because CartFlow runs purely on the client side without SSR hydration.
 
-*Remediation decision:* Per instruction, `npm audit fix` was intentionally NOT executed because both fixes require major breaking SemVer upgrades (`vite` 5 $\rightarrow$ 8, `react-router` 6 $\rightarrow$ 7) that would break the verified application and test suite.
+*Remediation Decision:* Per instruction, `npm audit fix` was intentionally NOT executed because both fixes require major breaking SemVer upgrades (`vite` 5 $\rightarrow$ 8, `react-router` 6 $\rightarrow$ 7) that would break the verified application and test suite. The risks are acknowledged and tracked for future framework upgrades.
 
 ### E. Final Quality Gates & Test Execution Record
 ```powershell
