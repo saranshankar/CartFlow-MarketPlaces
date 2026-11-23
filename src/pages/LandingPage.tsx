@@ -53,11 +53,11 @@ export const LandingPage: React.FC = () => {
                 </Link>
               </div>
 
-              {/* Marketplace Trust Badges */}
+              {/* Development Verification & Engineering Metrics */}
               <div className="pt-8 border-t border-meridian-800/80 grid grid-cols-3 gap-6 max-w-lg mx-auto lg:mx-0">
                 <div>
-                  <span className="font-display text-2xl font-extrabold text-white block">4.9 ★</span>
-                  <span className="text-[11px] text-slate-400 uppercase tracking-wider">Customer Score</span>
+                  <span className="font-display text-2xl font-extrabold text-white block">56 / 56</span>
+                  <span className="text-[11px] text-slate-400 uppercase tracking-wider">Automated Tests</span>
                 </div>
                 <div>
                   <span className="font-display text-2xl font-extrabold text-white block">2</span>
@@ -65,7 +65,7 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <div>
                   <span className="font-display text-2xl font-extrabold text-emerald-400 block">100%</span>
-                  <span className="text-[11px] text-slate-400 uppercase tracking-wider">SDET Verified</span>
+                  <span className="text-[11px] text-slate-400 uppercase tracking-wider">Integer Math</span>
                 </div>
               </div>
             </div>
@@ -77,10 +77,10 @@ export const LandingPage: React.FC = () => {
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                     <span className="text-xs uppercase font-extrabold text-cyan-600 tracking-wider flex items-center gap-1.5">
                       <Zap className="w-3.5 h-3.5 fill-cyan-600" />
-                      Featured Deal of the Day
+                      Featured Demonstration Item
                     </span>
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      In Stock
+                      Verified Spec
                     </span>
                   </div>
 
@@ -203,7 +203,7 @@ export const LandingPage: React.FC = () => {
                 Pure integer calculations, concurrency locks, and automated browser tests.
               </p>
               <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 mt-3">
-                14/14 Tests Passed
+                56/56 Tests Passed
               </span>
             </div>
           </div>

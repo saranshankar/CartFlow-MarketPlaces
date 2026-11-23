@@ -67,7 +67,7 @@ export const CheckoutPage: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 text-xs text-olive bg-sand px-3.5 py-1.5 rounded-full border border-warmgrey">
               <ShieldCheck className="w-4 h-4 text-naturalgreen" aria-hidden="true" />
-              <span>Pure Client-Side State</span>
+              <span>Checkout Simulation • Zero External Services</span>
             </div>
           </div>
 
@@ -137,7 +137,7 @@ export const CheckoutPage: React.FC = () => {
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span className="font-semibold text-naturalgreen">Complimentary</span>
+                    <span className="font-semibold text-charcoal">₹0 (Simulation)</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Estimated Taxes</span>

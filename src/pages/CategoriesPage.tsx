@@ -65,7 +65,7 @@ export const CategoriesPage: React.FC = () => {
 
                 <div className="pt-4 flex items-center gap-2 text-xs text-emerald-700 font-medium">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" aria-hidden="true" />
-                  <span>Guaranteed In Stock • Instant Dispatch</span>
+                  <span>Deterministic Specification • Available for Demo</span>
                 </div>
               </div>
 

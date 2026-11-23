@@ -101,7 +101,7 @@ export const WishlistPage: React.FC = () => {
 
                 <div className="flex items-center gap-2 text-[11px] text-emerald-700 font-medium mb-6">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" aria-hidden="true" />
-                  <span>In Stock • Ready to Order</span>
+                  <span>Synthetic Item • Ready for Demo</span>
                 </div>
               </div>
 

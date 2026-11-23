@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Truck, Sparkles } from 'lucide-react';
+import { ShieldCheck, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const TopUtilityBar: React.FC = () => {
@@ -9,8 +9,8 @@ export const TopUtilityBar: React.FC = () => {
         {/* Left: Shipping & Guarantee Notice */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-cyan-400">
-            <Truck className="w-3.5 h-3.5" aria-hidden="true" />
-            <span className="font-semibold">Complimentary Express Shipping</span>
+            <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />
+            <span className="font-semibold">Deterministic Evaluation Sandbox</span>
           </div>
           <span className="text-meridian-700">•</span>
           <span className="text-slate-400">Zero hidden fees • Pure client-side arithmetic</span>

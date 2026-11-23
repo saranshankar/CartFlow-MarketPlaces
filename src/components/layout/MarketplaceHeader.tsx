@@ -147,7 +147,7 @@ export const MarketplaceHeader: React.FC = () => {
                 isActive('/checkout') ? 'bg-meridian-900 text-white' : 'text-slate-800 hover:bg-slate-100'
               }`}
             >
-              Express Checkout
+              Checkout Simulation
             </Link>
           </nav>
         </div>

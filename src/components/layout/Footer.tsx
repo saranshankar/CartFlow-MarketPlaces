@@ -97,7 +97,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link to="/checkout" className="text-slate-300 hover:text-white transition-colors">
-                  Express Checkout
+                  Checkout Simulation
                 </Link>
               </li>
             </ul>

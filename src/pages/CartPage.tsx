@@ -84,11 +84,11 @@ export const CartPage: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex justify-between text-olive">
-                  <span>Estimated Shipping</span>
-                  <span className="font-semibold text-naturalgreen">Complimentary</span>
+                  <span>Delivery & Surcharges</span>
+                  <span className="font-semibold text-charcoal">₹0 (Demo Simulation)</span>
                 </div>
                 <div className="flex justify-between text-olive">
-                  <span>Taxes & Surcharges</span>
+                  <span>Taxes</span>
                   <span className="font-semibold text-charcoal">₹0</span>
                 </div>
               </div>

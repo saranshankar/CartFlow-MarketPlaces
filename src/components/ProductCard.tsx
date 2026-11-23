@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Check, Star } from 'lucide-react';
+import { Plus, Check } from 'lucide-react';
 import { Product } from '../types';
 import { formatCurrency } from '../utils/currency';
 
@@ -103,10 +103,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Content */}
       <div className="flex-1 flex flex-col">
-        <div className="flex items-center gap-1 text-xs text-amber-400 mb-1">
-          <Star className="w-3.5 h-3.5 fill-amber-400" aria-hidden="true" />
-          <span className="font-semibold text-slate-200">4.9</span>
-          <span className="text-slate-400">(Fixed Spec)</span>
+        <div className="flex items-center gap-1 text-xs text-cyan-400 mb-1">
+          <span className="font-semibold text-slate-200">Verified Spec</span>
+          <span className="text-slate-400">• Synthetic Demo</span>
         </div>
 
         <h3 className="text-lg font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">
