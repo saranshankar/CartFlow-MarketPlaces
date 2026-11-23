@@ -36,7 +36,19 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [items, setItems] = useState<CartItem[]>(() => {
     try {
       const stored = localStorage.getItem('cartflow_items');
-      return stored ? JSON.parse(stored) : [];
+      if (!stored) return [];
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(
+          (item) =>
+            item &&
+            item.product &&
+            typeof item.product.id === 'string' &&
+            typeof item.quantity === 'number' &&
+            item.quantity > 0
+        );
+      }
+      return [];
     } catch {
       return [];
     }
@@ -55,7 +67,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(() => {
     try {
       const stored = localStorage.getItem('cartflow_confirmed_order');
-      return stored ? JSON.parse(stored) : null;
+      if (!stored) return null;
+      const parsed = JSON.parse(stored);
+      if (parsed && typeof parsed.reference === 'string' && typeof parsed.total === 'number') {
+        return parsed;
+      }
+      return null;
     } catch {
       return null;
     }

@@ -139,4 +139,21 @@ test.describe('CartFlow 3.0 - Phase 4E SDET Quality Engineering Suite', () => {
     await page.goto('/cart');
     await expect(page).toHaveURL(/\/cart/);
   });
+
+  test('QE-07: Corrupted or non-array localStorage data is sanitized gracefully without crash', async ({ page }) => {
+    await page.goto('/');
+    // Inject non-array and corrupted values into localStorage
+    await page.evaluate(() => {
+      localStorage.setItem('cartflow_items', '{"not": "an array"}');
+      localStorage.setItem('cartflow_wishlist', '{"invalid": true}');
+      localStorage.setItem('cartflow_confirmed_order', '"corrupted"');
+    });
+
+    // Reload page
+    await page.reload();
+
+    // Verify application boots cleanly and remains fully functional
+    await expect(page.getByTestId('cart-badge')).toHaveText('0');
+    await expect(page.getByRole('heading', { name: /The Curated Collection|Curated Essentials/i }).first()).toBeVisible();
+  });
 });
