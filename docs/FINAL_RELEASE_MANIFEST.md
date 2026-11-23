@@ -109,8 +109,8 @@ A raw security audit was captured and saved to [`artifacts/security/npm-audit-ra
 |---|---|
 | **Archive Filename** | `CartFlow_3.0_Final_Submission.zip` |
 | **Archive Location** | `C:\Users\HEMANTH\Documents\SDETintern\CartFlow_3.0_Final_Submission.zip` |
-| **Archive File Size** | 31,298,755 bytes (29.85 MB) |
-| **SHA-256 Checksum** | `75e74079aab22ff064dc6c0155488bc87e176595fd588c1694f3e8db57b3f623` |
+| **Archive File Size** | 31,300,091 bytes (29.85 MB) |
+| **SHA-256 Checksum** | `3c669b67c5f9c1871423d35af0b7b0556cdfa48a48b49880f925f77a18732fdc` |
 | **Included Directories** | `src/`, `tests/`, `docs/`, `artifacts/`, `evidence/`, `scripts/` |
 | **Included Root Files** | `README.md`, `package.json`, `package-lock.json`, `playwright.config.ts`, `vite.config.ts`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `tailwind.config.js`, `postcss.config.js`, `.eslintrc.cjs`, `index.html`, `.gitignore` |
 | **Excluded Items** | `node_modules/`, `.git/`, `.env*`, build caches, temporary logs, personal machine configs |
