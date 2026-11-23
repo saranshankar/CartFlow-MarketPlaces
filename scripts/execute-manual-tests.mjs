@@ -9,6 +9,8 @@ async function executeManualQAScenarios() {
     fs.mkdirSync(screenshotsDir, { recursive: true });
   }
 
+  const brainArtifactDir = 'C:\\Users\\HEMANTH\\.gemini\\antigravity\\brain\\e7e08ea3-f186-460b-a030-fb4ab9e4f033';
+
   console.log('--- Launching Preview Server for Manual QA Execution ---');
   const server = spawn('cmd.exe', ['/c', 'npm', 'run', 'preview', '--', '--port', '4173'], {
     env: { ...process.env, PATH: `D:\\programfiles\\nodejs\\nodejs;${process.env.PATH}` },
@@ -22,8 +24,6 @@ async function executeManualQAScenarios() {
     headless: true,
   });
 
-  const manualLog = [];
-
   // ==========================================
   // Test M01: Empty cart checkout
   // ==========================================
@@ -31,8 +31,8 @@ async function executeManualQAScenarios() {
   const contextM01 = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const pageM01 = await contextM01.newPage();
 
-  await pageM01.goto('http://localhost:4173');
-  await pageM01.waitForSelector('[data-testid="product-catalog-grid"]');
+  await pageM01.goto('http://localhost:4173/checkout');
+  await pageM01.waitForSelector('[data-testid="customer-name-input"]');
 
   // Step 2: Ensure cart is empty
   const isEmptyVisible = await pageM01.locator('[data-testid="empty-cart-state"]').isVisible();
@@ -74,13 +74,14 @@ async function executeManualQAScenarios() {
   const contextM02 = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const pageM02 = await contextM02.newPage();
 
-  await pageM02.goto('http://localhost:4173');
+  // Step 1: Add product on collection page
+  await pageM02.goto('http://localhost:4173/shop');
   await pageM02.waitForSelector('[data-testid="product-catalog-grid"]');
-
-  // Step 1: Add product
   await pageM02.click('[data-testid="add-to-cart-prod-aero-headphones"]');
 
-  // Step 2: Enter valid customer name
+  // Step 2: Navigate to checkout and enter valid customer name
+  await pageM02.goto('http://localhost:4173/checkout');
+  await pageM02.waitForSelector('[data-testid="customer-name-input"]');
   await pageM02.fill('[data-testid="customer-name-input"]', 'Jane Doe');
 
   // Step 3: Rapidly click Place Order twice in succession
@@ -111,7 +112,28 @@ async function executeManualQAScenarios() {
   const m02ScreenshotPath = path.join(screenshotsDir, 'rapid-double-click.png');
   await pageM02.screenshot({ path: m02ScreenshotPath, fullPage: true });
   console.log(`M02 Evidence captured at: ${m02ScreenshotPath}`);
+
+  // Capture Confirmation Screen specific view
+  const confirmScreenshotPath = path.join(screenshotsDir, 'confirmation-screen.png');
+  await pageM02.screenshot({ path: confirmScreenshotPath, fullPage: true });
+
   await contextM02.close();
+
+  // ==========================================
+  // Capture Desktop & Mobile Responsive Views
+  // ==========================================
+  console.log('\n--- Capturing Desktop & Mobile Showcase Screenshots ---');
+  const desktopCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const desktopPage = await desktopCtx.newPage();
+  await desktopPage.goto('http://localhost:4173');
+  await desktopPage.screenshot({ path: path.join(screenshotsDir, 'desktop-view.png'), fullPage: true });
+  await desktopCtx.close();
+
+  const mobileCtx = await browser.newContext({ viewport: { width: 375, height: 812 } });
+  const mobilePage = await mobileCtx.newPage();
+  await mobilePage.goto('http://localhost:4173');
+  await mobilePage.screenshot({ path: path.join(screenshotsDir, 'mobile-view.png'), fullPage: true });
+  await mobileCtx.close();
 
   // Copy phase3 automated screenshots to artifacts/screenshots
   const phase3EvidenceDir = path.resolve(process.cwd(), 'evidence/phase3');
@@ -129,6 +151,28 @@ async function executeManualQAScenarios() {
       path.join(screenshotsDir, 'quantity-update.png')
     );
     console.log('Copied automated suite screenshots to artifacts/screenshots.');
+  }
+
+  // Copy all screenshots to brain artifact directory if it exists
+  if (fs.existsSync(brainArtifactDir)) {
+    const filesToCopy = [
+      'empty-cart-manual.png',
+      'rapid-double-click.png',
+      'confirmation-screen.png',
+      'desktop-view.png',
+      'mobile-view.png',
+      'successful-checkout.png',
+      'missing-name-validation.png',
+      'quantity-update.png',
+    ];
+    for (const f of filesToCopy) {
+      const src = path.join(screenshotsDir, f);
+      const dst = path.join(brainArtifactDir, f);
+      if (fs.existsSync(src)) {
+        fs.copyFileSync(src, dst);
+      }
+    }
+    console.log('Synced all screenshots to conversation artifact directory.');
   }
 
   // Copy playwright-report to artifacts/reports/playwright-report

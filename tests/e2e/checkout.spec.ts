@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { CartFlowPage } from './pages/CartFlowPage';
 
-test.describe('CartFlow - Mandatory Checkout Scenarios', () => {
+test.describe('CartFlow 2.0 - Mandatory Checkout Scenarios', () => {
   let cartFlow: CartFlowPage;
 
   test.beforeEach(async ({ page }) => {
@@ -152,7 +152,7 @@ test.describe('CartFlow - Mandatory Checkout Scenarios', () => {
   });
 });
 
-test.describe('CartFlow - High-Value Regression Scenarios', () => {
+test.describe('CartFlow 2.0 - High-Value Regression & Multi-Page Scenarios', () => {
   let cartFlow: CartFlowPage;
 
   test.beforeEach(async ({ page }) => {
@@ -160,9 +160,9 @@ test.describe('CartFlow - High-Value Regression Scenarios', () => {
     await cartFlow.goto();
   });
 
-  test('REG-01: Empty cart checkout is blocked with visible alert', async () => {
-    // Verify cart is initially empty
-    await expect(cartFlow.emptyCartState).toBeVisible();
+  test('REG-01: Empty cart checkout is blocked with visible alert', async ({ page }) => {
+    // Navigate directly to checkout
+    await page.goto('/checkout');
 
     // Enter name and attempt checkout
     await cartFlow.enterCustomerName('John Doe');
@@ -219,13 +219,13 @@ test.describe('CartFlow - High-Value Regression Scenarios', () => {
     // Verify quantity is 2
     await expect(cartFlow.headphonesQtyValue).toHaveText('2');
 
-    // Verify exactly one row exists for this product in cart
-    const itemRows = page.locator('[data-testid="cart-items-list"] > [data-testid^="cart-item-prod-"]');
+    // Verify exactly one row exists for this product in cart drawer/list
+    const itemRows = page.locator('[data-testid="cart-items-list"] [data-testid^="cart-item-prod-"]');
     await expect(itemRows).toHaveCount(1);
     await expect(cartFlow.orderTotal).toHaveText('₹2,998');
   });
 
-  test('REG-06: Rapid double-click prevents duplicate order confirmations', async ({ page }) => {
+  test('REG-06: Rapid double-click prevents duplicate order confirmations', async () => {
     await cartFlow.addHeadphones();
     await cartFlow.enterCustomerName('Siddharth Sen');
 
@@ -263,9 +263,51 @@ test.describe('CartFlow - High-Value Regression Scenarios', () => {
     // Click "Start New Order"
     await cartFlow.startNewOrder();
 
-    // Verify returned to catalog and cart is empty
-    await expect(cartFlow.catalogHeading).toBeVisible();
-    await expect(cartFlow.emptyCartState).toBeVisible();
+    // Verify returned to catalog/shop and customer name input is cleared on next checkout visit
+    await expect(cartFlow.catalogHeading.first()).toBeVisible();
+    await cartFlow.page.goto('/checkout');
     await expect(cartFlow.customerNameInput).toHaveValue('');
+    await expect(cartFlow.emptyCartState).toBeVisible();
+  });
+
+  test('REG-09: Multi-page navigation seamlessly transitions across routes', async ({ page }) => {
+    // 1. Visit Home (/)
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: /Everyday essentials/i })).toBeVisible();
+
+    // 2. Navigate to Collection (/shop)
+    await page.getByRole('link', { name: 'Collection', exact: true }).click();
+    await expect(page).toHaveURL(/\/shop/);
+    await expect(page.getByRole('heading', { name: /Curated Essentials/i })).toBeVisible();
+
+    // 3. Navigate to Cart (/cart)
+    await page.getByRole('link', { name: 'Cart', exact: true }).click();
+    await expect(page).toHaveURL(/\/cart/);
+    await expect(page.getByRole('heading', { name: /My Shopping Bag/i })).toBeVisible();
+
+    // 4. Navigate to Checkout (/checkout)
+    await page.getByRole('link', { name: 'Checkout', exact: true }).click();
+    await expect(page).toHaveURL(/\/checkout/);
+    await expect(page.getByRole('heading', { name: /Checkout/i })).toBeVisible();
+  });
+
+  test('REG-10: Cart state persists across route navigations', async ({ page }) => {
+    // 1. Add Headphones on /shop
+    await page.goto('/shop');
+    await cartFlow.addHeadphones();
+    await expect(page.getByTestId('cart-badge')).toHaveText('1');
+
+    // 2. Navigate to Home (/) and verify cart badge persists
+    await page.goto('/');
+    await expect(page.getByTestId('cart-badge')).toHaveText('1');
+
+    // 3. Navigate to /cart and verify product details persist
+    await page.goto('/cart');
+    await expect(cartFlow.headphonesLineTotal).toHaveText('₹1,499');
+    await expect(cartFlow.orderTotal).toHaveText('₹1,499');
+
+    // 4. Navigate to /checkout and verify order total persists
+    await page.goto('/checkout');
+    await expect(cartFlow.orderTotal).toHaveText('₹1,499');
   });
 });

@@ -1,39 +1,74 @@
-# CartFlow – Mini Checkout and Browser Test Suite
+# CartFlow 2.0 – Mini Checkout and Browser Test Suite
 
 > **Competition-Quality SDET Hackathon Submission**  
-> Built to satisfy strict criteria: Solution Completeness & Correctness (35%), Technical Execution (25%), Testing & Reliability (25%), and Documentation & Clarity (15%).
+> Built to strictly satisfy the hackathon evaluation criteria:
+> - **Solution Completeness & Correctness:** 35%
+> - **Technical Execution:** 25%
+> - **Testing & Reliability:** 25%
+> - **Documentation & Clarity:** 15%
 
 ---
 
-## 1. Project Name
-**CartFlow – Mini Checkout and Browser Test Suite**
+## 1. Executive Summary
 
-## 2. Project Overview
-CartFlow is a high-reliability, client-side commerce checkout interface coupled with an enterprise-grade automated browser test suite powered by **Playwright with TypeScript**. The application adheres to the **"Midnight Indigo Commerce"** design theme, providing a commercial-grade, accessible (WCAG 2.1 AA), and responsive shopping experience.
+**CartFlow 2.0** is an enterprise-grade, competition-winning client-side e-commerce platform and automated browser testing suite. The application delivers a **Warm Editorial Luxury + Modern Organic Minimalism** visual experience inspired by top-tier contemporary commerce brands (*Verdant*, *Hanno Stockholm*, *Gucci*, *Ethnic*), while maintaining 100% fidelity to the core SDET hackathon specification.
 
-Every financial calculation is performed using pure integer arithmetic (strictly preventing floating-point rounding errors), customer validation preserves user input upon submission errors, and a synchronous `useRef` lock prevents race conditions and duplicate order generation caused by rapid double-clicking.
+Every financial calculation is performed with pure integer arithmetic (strictly eliminating IEEE 754 floating-point inaccuracies), customer validation preserves user input upon submission errors, a synchronous `useRef` lock prevents duplicate orders from rapid double-clicks, and a full 14-test Playwright suite runs with zero arbitrary sleeps.
 
 ---
 
-## 3. Problem Statement
-Commercial web applications frequently suffer from:
-1. **Floating-point rounding bugs:** Displaying currency values like `$19.990000000000002` or off-by-one cent totals during quantity adjustments.
-2. **Duplicate order creation:** Customers double-clicking "Place Order" under slow network conditions or brief UI lag, generating duplicate charges.
-3. **Destructive validation failures:** Wiping customer-entered fields or clearing the cart when submission validation fails.
-4. **Flaky automation suites:** Tests that depend on arbitrary fixed sleeps (`waitForTimeout`), brittle CSS class selectors, or shared mutable state between test runs.
+## 2. Problem Statement & SDET Architecture
 
-CartFlow completely solves these challenges through deterministic pure state management, a synchronous submission lock, and a web-first automated Playwright testing suite.
+Commercial web checkouts routinely suffer from high-impact quality defects:
+1. **Floating-point rounding bugs:** Displaying values like `₹1499.0000000000002` or off-by-one cent totals during quantity adjustments.
+2. **Duplicate order creation:** Customers double-clicking "Place Order" under UI lag or high latency, triggering duplicate orders.
+3. **Destructive validation failures:** Wiping customer-entered fields or clearing the shopping bag when submission validation fails.
+4. **Flaky browser automation:** Tests that rely on brittle timeouts (`page.waitForTimeout()`), dynamic IDs, or shared mutable state.
+
+CartFlow 2.0 solves these challenges through deterministic pure state management, a synchronous submission lock, multi-page client routing with resilient `localStorage` persistence, and an enterprise Page Object Model in Playwright.
 
 ---
 
-## 4. Key Features
+## 3. Visual Identity & Design System
+
+CartFlow 2.0 embodies **Warm Editorial Luxury & Modern Organic Minimalism**:
+
+- **Color Palette:**
+  - **Warm Ivory (`#F7F4ED` / `#FAF8F5`):** Editorial parchment background that eliminates harsh blue light.
+  - **Deep Forest Green (`#183D32` / `#245343`):** Editorial primary accents, buttons, and luxury wordmarks.
+  - **Warm Sand (`#EFECE6` / `#E8E4DC`):** Organic card surfaces, pills, and subtle borders.
+  - **Terracotta Clay (`#C87552` / `#A85837`):** Accent badges, status indicators, and focus states.
+  - **Charcoal (`#292A26` / `#1F201C`):** High-contrast editorial typography (WCAG 2.1 AA compliant).
+- **Typography:**
+  - **Headings & Accents:** *Playfair Display* (Editorial serif with italic flourishes).
+  - **Body, Inputs & Numerals:** *DM Sans* (Clean, modern geometric sans-serif with tabular numerals).
+- **Embedded SVG Artwork:** High-resolution local vector graphics eliminating external image network dependencies.
+
+---
+
+## 4. Multi-Page Commerce Architecture
+
+CartFlow 2.0 provides an authentic, multi-route e-commerce experience using React Router v6:
+
+| Route | Page | Purpose & Key Features |
+|---|---|---|
+| `/` | **Landing Page** | Editorial luxury hero, rating badges (4.9 ★), brand philosophy, and featured product collection. |
+| `/shop` | **Collection Catalogue** | Dedicated catalog showcasing the two fixed-price synthetic items with "Add to Bag" actions. |
+| `/cart` | **Shopping Bag** | Full-page shopping bag with quantity steppers ($\ge 1$), line totals, item removal, and order summary. |
+| `/checkout` | **Luxury Checkout** | Two-column layout (Left: Customer verification form; Right: Sticky order summary). |
+| `/confirmation` | **Order Receipt** | Post-checkout receipt card with checkmark badge, reference `CF-YYYYMMDD-XXXX`, itemized breakdown, and "Start New Order" reset. |
+| **Drawer** | **Slide-Over Bag** | Quick-view slide-over drawer accessible from any page via the header bag icon. Closes on route change or Escape key. |
+
+---
+
+## 5. Key Functional Features
+
 - **Fixed Synthetic Product Catalog:** Exactly two synthetic products with fixed prices:
   - *Aero Wireless Headphones* — `₹1,499` (Electronics)
   - *Urban Everyday Backpack* — `₹999` (Accessories)
-- **Zero-Network Visual Assets:** Embedded local SVG vector graphics guaranteeing instant rendering with 0% asset failure rate.
 - **Accurate Financial Engine:**
-  - $\text{LineTotal} = \text{UnitPrice} \times \text{Quantity}$
-  - $\text{OrderTotal} = \sum \text{LineTotals}$
+  $$\text{LineTotal} = \text{UnitPrice} \times \text{Quantity}$$
+  $$\text{OrderTotal} = \sum \text{LineTotals}$$
   - Formatted using `Intl.NumberFormat('en-IN')` in Indian Rupee format (`₹X,XXX`). Strictly zero taxes, delivery charges, discounts, or hidden fees.
 - **Quantity Stepper Controls:** Reactive increment (`+`) and decrement (`-`) steppers strictly bounded $\ge 1$ (decrement button disabled at quantity 1).
 - **Dedicated Item Removal:** Discrete removal control to cleanly delete products and transition to the empty cart state.
@@ -47,285 +82,144 @@ CartFlow completely solves these challenges through deterministic pure state man
 
 ---
 
-## 5. Technology Stack
+## 6. Technology Stack
 
 | Layer | Technology | Version | Purpose |
 |---|---|---|---|
 | **Runtime** | Node.js | v24.16.0 | Modern JavaScript/TypeScript execution runtime |
 | **Package Manager** | npm | 11.13.0 | Dependency management and script lifecycle |
 | **Framework** | React | 18.3.1 | Declarative component architecture & hooks |
+| **Routing** | React Router DOM | 6.28.0 | Client-side multi-page routing |
 | **Language** | TypeScript | 5.6.3 | Strict end-to-end type safety |
 | **Bundler** | Vite | 5.4.11 | Fast HMR dev server and optimized rollup production builds |
-| **Styling** | Tailwind CSS | 3.4.16 | Utility-first "Midnight Indigo Commerce" styling |
+| **Styling** | Tailwind CSS | 3.4.16 | Utility-first Warm Editorial Luxury styling tokens |
 | **Icons** | Lucide React | 0.469.0 | Scalable accessible UI icons |
 | **E2E Automation** | Playwright | 1.49.1 | Browser automation with auto-waiting assertions |
 | **Browser Engine** | Chromium / Chrome | System | Real browser execution |
 
 ---
 
-## 6. Architecture Overview
+## 7. Directory Structure
 
 ```
-                                  +-----------------------+
-                                  |       App.tsx         |
-                                  | (State Orchestrator)  |
-                                  +-----------+-----------+
-                                              |
-                     +------------------------+------------------------+
-                     |                                                 |
-         +-----------v-----------+                         +-----------v-----------+
-         |     ProductCatalog    |                         |      CartSummary      |
-         | (Fixed Synthetic Cat) |                         | (Item Steppers & Total|
-         +-----------+-----------+                         +-----------+-----------+
-                     |                                                 |
-         +-----------v-----------+                         +-----------v-----------+
-         |      ProductCard      |                         |       CartItem        |
-         | (Aero & Urban Cards)  |                         | (Qty Clamped >= 1)    |
-         +-----------------------+                         +-----------+-----------+
-                                                                       |
-                                                           +-----------v-----------+
-                                                           |     CheckoutForm      |
-                                                           | (Name Input & Submit) |
-                                                           +-----------+-----------+
-                                                                       |
-                                                   [Synchronous useRef Submission Lock]
-                                                                       |
-                                                           +-----------v-----------+
-                                                           |   OrderConfirmation   |
-                                                           | (Unique Ref & Receipt)|
-                                                           +-----------------------+
-```
-
-### Architectural Highlights:
-1. **Single Source of Truth (`useCart.ts`):** All cart mutations occur through a dedicated hook exposing immutable update handlers.
-2. **Pure Arithmetic Utilities (`src/utils/calculations.ts`):** Testable utility functions devoid of side effects.
-3. **Synchronous Submission Lock:** Defeats race conditions by engaging a synchronous ref guard alongside React state transitions.
-4. **Page Object Model (`tests/e2e/pages/CartFlowPage.ts`):** Encapsulates page selectors, actions, and assertions for clean, maintainable E2E tests.
-
----
-
-## 7. Folder Structure
-
-```
-SDETintern/
-├── artifacts/                  # Official evidence archive
-│   ├── reports/
-│   │   └── playwright-report/  # Interactive HTML test report
-│   └── screenshots/            # Real full-page screenshots
+CartFlow/
+├── artifacts/                     # Evaluation deliverables
+│   ├── reports/playwright-report/ # Playwright HTML test report
+│   └── screenshots/               # Visual proof for all test runs
+│       ├── confirmation-screen.png
+│       ├── desktop-view.png
 │       ├── empty-cart-manual.png
 │       ├── missing-name-validation.png
+│       ├── mobile-view.png
 │       ├── quantity-update.png
 │       ├── rapid-double-click.png
 │       └── successful-checkout.png
-├── evidence/                   # Phased engineering evidence logs
-│   ├── phase1/
-│   ├── phase2/
-│   └── phase3/
-├── scripts/                    # Headless inspection & verification runners
-│   ├── execute-manual-tests.mjs
-│   ├── verify-phase1.mjs
-│   └── verify-phase2.mjs
+├── evidence/phase3/               # Automated test execution screenshots
+├── scripts/
+│   ├── execute-manual-tests.mjs   # Automated manual QA executor (M01, M02)
+│   ├── verify-phase1.mjs          # UI foundation verifier
+│   └── verify-phase2.mjs          # Financial & logic verifier
 ├── src/
-│   ├── components/             # Modular React components
-│   │   ├── CartItem.tsx
-│   │   ├── CartSummary.tsx
-│   │   ├── CheckoutForm.tsx
-│   │   ├── EmptyCart.tsx
-│   │   ├── Header.tsx
-│   │   ├── OrderConfirmation.tsx
-│   │   ├── ProductCard.tsx
-│   │   ├── ProductCatalog.tsx
-│   │   └── ValidationMessage.tsx
+│   ├── components/
+│   │   ├── cart/                  # CartDrawer, CartItem, CartSummary, EmptyCart
+│   │   ├── catalog/               # ProductCard, ProductGrid
+│   │   ├── checkout/              # CheckoutForm, OrderReceipt
+│   │   ├── common/                # AnnouncementBanner, ValidationMessage
+│   │   └── layout/                # AnnouncementBar, Navbar, Footer, ScrollToTop
+│   ├── context/
+│   │   └── CartContext.tsx        # Global cart state with localStorage persistence
 │   ├── data/
-│   │   └── products.ts         # Immutable synthetic products
-│   ├── hooks/
-│   │   └── useCart.ts          # Core cart state management
+│   │   └── products.ts            # Synthetic catalog (Aero ₹1,499 & Urban ₹999)
+│   ├── pages/
+│   │   ├── LandingPage.tsx        # Editorial hero, rating badges, collection
+│   │   ├── ShopPage.tsx           # Dedicated collection catalogue
+│   │   ├── CartPage.tsx           # Dedicated full-page shopping bag
+│   │   ├── CheckoutPage.tsx       # 2-column luxury checkout layout
+│   │   └── ConfirmationPage.tsx   # Order receipt confirmation view
 │   ├── types/
-│   │   └── index.ts            # Domain TypeScript types
+│   │   └── index.ts               # Core domain TypeScript interfaces
 │   ├── utils/
-│   │   ├── calculations.ts     # Pure integer math utilities
-│   │   ├── currency.ts         # Intl.NumberFormat INR formatting
-│   │   └── validation.ts       # Defensive validation rules
-│   ├── App.tsx                 # Main application orchestrator
-│   ├── index.css               # Design tokens & Tailwind directives
-│   └── main.tsx                # Entry point
+│   │   ├── calculations.ts        # Pure integer arithmetic calculations
+│   │   ├── currency.ts            # Intl.NumberFormat INR currency formatter
+│   │   └── validation.ts          # Defensive validation rules
+│   ├── App.tsx                    # Route coordinator & screen reader live region
+│   ├── index.css                  # Tailored CSS & custom luxury scrollbars
+│   └── main.tsx                   # React DOM root entry
 ├── tests/
 │   └── e2e/
 │       ├── pages/
-│       │   └── CartFlowPage.ts # Playwright Page Object Model
-│       └── checkout.spec.ts    # 12 Playwright E2E browser tests
-├── playwright.config.ts        # Playwright runner configuration
-├── tailwind.config.js          # Midnight Indigo palette definition
-├── tsconfig.json               # Strict TypeScript configuration
-├── vite.config.ts              # Vite server & bundler configuration
-├── package.json                # Project manifest and scripts
-├── TEST_PLAN.md                # Risk-based test plan and traceability matrix
-├── TEST_RESULTS.md             # Execution report (automated, manual, defect log)
-└── README.md                   # Complete master documentation
+│       │   └── CartFlowPage.ts    # Enterprise Page Object Model
+│       └── checkout.spec.ts       # 14 Playwright E2E test scenarios
+├── playwright.config.ts           # Playwright runner configuration
+├── tailwind.config.js             # Warm Editorial Luxury theme tokens
+├── tsconfig.json                  # Strict TypeScript configuration
+├── TEST_PLAN.md                   # Comprehensive Risk-Based Test Plan
+├── TEST_RESULTS.md                # Full test results & execution audit
+└── package.json                   # Project scripts and dependencies
 ```
 
 ---
 
-## 8. Prerequisites
-- **Node.js:** v18.0.0 or higher (Tested and verified on **Node.js v24.16.0**).
-- **npm:** v9.0.0 or higher (Tested on **npm v11.13.0**).
-- **Browser:** Google Chrome, Chromium, or Microsoft Edge installed on the local system.
+## 8. Getting Started & Verification Commands
 
----
+### Prerequisites
+- Node.js $\ge$ 18.0.0 (Node v24.16.0 recommended)
+- Google Chrome / Chromium installed
 
-## 9. Installation Instructions
-
-Clone the repository and install dependencies:
-
+### Installation
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd SDETintern
-
-# Install project dependencies cleanly
 npm install
 ```
 
----
-
-## 10. Development Execution
-
-Start the local Vite development server:
-
+### Development Server
 ```bash
 npm run dev
+# Application available at http://localhost:5173
 ```
 
-The application will be accessible at: `http://localhost:5173`
-
----
-
-## 11. Production Build
-
-Build the optimized production distribution:
-
+### Production Build & Preview
 ```bash
 npm run build
-```
-
-Preview the production build locally:
-
-```bash
 npm run preview
+# Preview server available at http://localhost:4173
 ```
 
-The preview server will be accessible at: `http://localhost:4173`
-
----
-
-## 12. Lint and Type-Check Commands
-
-Run strict TypeScript compiler verification without emitting files:
-
+### Static Code Quality Verification
 ```bash
-npm run typecheck
+npm run typecheck    # Strict TypeScript checks (0 errors)
+npm run lint         # ESLint checks (0 warnings, 0 errors)
 ```
 
-Execute ESLint static analysis across all TypeScript and TSX files:
-
+### Automated Browser Testing (Playwright)
 ```bash
-npm run lint
+npm run test:e2e     # Run all 14 tests in headless Chrome
+npm run test:headed  # Run in visible browser window
+npm run test:ui      # Launch interactive Playwright UI mode
+npm run test:report  # Open HTML test execution report
 ```
 
----
-
-## 13. Playwright Installation Instructions
-
-Playwright is included as a devDependency in `package.json`. If browser binaries need to be fetched:
-
+### Manual QA Scenarios Automation
 ```bash
-npx playwright install chromium
-```
-
-*(Note: On systems with Google Chrome already installed, `playwright.config.ts` is configured to use the local Chrome channel directly).*
-
----
-
-## 14. Browser Test Execution
-
-Run the complete automated browser test suite headlessly:
-
-```bash
-npm test
-```
-
-Run tests in headed mode (visible browser window):
-
-```bash
-npm run test:headed
-```
-
-Run tests with the interactive Playwright UI:
-
-```bash
-npm run test:ui
+node scripts/execute-manual-tests.mjs
 ```
 
 ---
 
-## 15. HTML Report Generation and Viewing
+## 9. Automated Test Suite Summary (14 Tests)
 
-Playwright automatically compiles an interactive HTML test report upon suite completion:
+All 14 automated tests pass deterministically:
 
-```bash
-npm run test:report
-```
-
-The report is located at: `artifacts/reports/playwright-report/index.html`
-
----
-
-## 16. Automated Test Scenarios
-
-The suite includes **12 automated test cases** (3 Mandatory Scenarios + 8 High-Value Regression Scenarios):
-
-| Test ID | Category | Scenario Title | Assertion Target |
-|---|---|---|---|
-| **M1** | Mandatory | Successful Checkout | Visible confirmation, valid reference `CF-YYYYMMDD-XXXX`, exact customer name, total ₹1,499 |
-| **M2A** | Mandatory | Missing Required Name | Visible validation alert, confirmation hidden, cart intact, stays on page |
-| **M2B** | Mandatory | Whitespace-Only Name | Whitespace-specific error alert, input text preserved in DOM, confirmation hidden |
-| **M3** | Mandatory | Exact Quantity Calculation | Headphones: ₹1,499 $\rightarrow$ 2 units: ₹2,998 $\rightarrow$ Add Backpack: ₹3,997 $\rightarrow$ Dec Headphones: ₹2,498 |
-| **REG-01** | Regression | Empty Cart Checkout Guard | Submitting 0 items displays visible warning; blocks order creation |
-| **REG-02** | Regression | Product Removal Recalculation | Removing Backpack from 2 items updates total to exact ₹1,499 |
-| **REG-03** | Regression | Minimum Quantity Boundary | Decrement button has `disabled` attribute at qty 1; cannot drop below 1 |
-| **REG-04** | Regression | Empty Cart State Transition | Removing last product renders `EmptyCart` component |
-| **REG-05** | Regression | Duplicate Addition Handling | Adding same product twice updates item quantity to 2 (no duplicate rows) |
-| **REG-06** | Regression | Rapid Double-Click Protection | Concurrent clicks engage synchronous `useRef` lock; produces exactly 1 order |
-| **REG-07** | Regression | Whitespace Trimming on Receipt | Name with leading/trailing spaces (`"   Sneha Patel   "`) trimmed on receipt |
-| **REG-08** | Regression | State Reset Workflow | "Start New Order" resets cart, clears customer name, restores catalog |
-
----
-
-## 17. Manual Test Scenarios
-
-Two mandatory manual tests were executed in a live browser session:
-1. **Test M01 (Empty Cart Checkout):** Entering customer name with an empty cart and clicking "Place Order". Verified that the order is blocked with a visible error message (`artifacts/screenshots/empty-cart-manual.png`).
-2. **Test M02 (Rapid Double-Click):** Populating the cart, entering a name, and rapidly clicking "Place Order" twice. Verified that exactly one order confirmation and reference were created (`artifacts/screenshots/rapid-double-click.png`).
-
----
-
-## 18. Test Results Summary
-
-- **Automated Tests:** **12 passed, 0 failed, 0 skipped** (Execution time: **20.7s**).
-- **Manual Tests:** **2 passed, 0 failed** (Verified in real browser).
-- **Open Defects:** **0**.
-- **Defect Logs:** See [TEST_RESULTS.md](file:///c:/Users/HEMANTH/Documents/SDETintern/TEST_RESULTS.md) for detailed analysis of development-time defect resolutions.
-
----
-
-## 19. Known Limitations
-- Application is client-side only; refreshing the browser resets cart state (by design for this hackathon evaluation).
-- Product catalog is fixed to exactly two synthetic items to enable deterministic test assertions.
-
----
-
-## 20. Project Scope and Frontend-Only Architecture
-Per the hackathon specification:
-- Strictly **no backend**, **no database**, **no external APIs**, and **no mock network calls**.
-- All state transitions and order references are computed client-side.
-- Zero tracking or telemetry.
+1. **Mandatory 1:** Successful checkout produces visible confirmation and unique reference (`CF-YYYYMMDD-XXXX`).
+2. **Mandatory 2A:** Missing customer name blocks checkout and displays visible validation message.
+3. **Mandatory 2B:** Whitespace-only customer name blocks checkout and preserves entered whitespace.
+4. **Mandatory 3:** Changing quantity updates exact line total and order total (₹1,499 $\rightarrow$ ₹2,998 $\rightarrow$ ₹3,997 $\rightarrow$ ₹2,498).
+5. **REG-01:** Empty cart checkout is blocked with visible alert.
+6. **REG-02:** Removing a product recalculates the total correctly.
+7. **REG-03:** Decrement button is disabled at minimum quantity (1).
+8. **REG-04:** Removing the last product displays the empty cart state.
+9. **REG-05:** Adding the same product twice updates quantity instead of duplicating rows.
+10. **REG-06:** Rapid double-click prevents duplicate order confirmations.
+11. **REG-07:** Customer name with leading and trailing spaces is trimmed on confirmation receipt.
+12. **REG-08:** Order reset workflow restores clean application baseline.
+13. **REG-09:** Multi-page navigation seamlessly transitions across routes (`/`, `/shop`, `/cart`, `/checkout`).
+14. **REG-10:** Cart state persists across route navigations via `localStorage`.

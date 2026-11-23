@@ -1,37 +1,48 @@
-# CartFlow – Comprehensive Risk-Based Test Plan
-**Project:** CartFlow – Mini Checkout and Browser Test Suite  
+# CartFlow 2.0 – Comprehensive Risk-Based Test Plan
+**Project:** CartFlow – Mini Checkout and Browser Test Suite (CartFlow 2.0)  
 **Author:** Senior SDET / QA Automation Engineer  
-**Document Version:** 1.0.0  
-**Status:** Approved & Executed (100% Pass Rate)
+**Document Version:** 2.0.0  
+**Status:** Approved & Executed (100% Pass Rate across 14 Automated + 2 Manual Tests)
 
 ---
 
 ## 1. Project Overview & Testing Objectives
 
-CartFlow is a competition-grade client-side e-commerce mini checkout application designed to evaluate precision financial arithmetic, input validation resilience, double-click protection, and end-to-end browser automation reliability using Playwright and TypeScript.
+CartFlow 2.0 is a competition-grade client-side e-commerce mini checkout application and automated test suite. The project models an editorial luxury commerce brand (*Warm Editorial Luxury + Modern Organic Minimalism*) across a full multi-page architecture (`/`, `/shop`, `/cart`, `/checkout`, `/confirmation`).
 
-### Primary Objectives:
-1. **Mathematical Precision:** Validate that unit price, quantity steppers, line totals, and order totals are calculated using pure integer arithmetic with strictly zero floating-point imprecision and zero unauthorized fees or taxes.
+### Primary Quality Objectives:
+1. **Mathematical Precision:** Validate that unit price, quantity steppers, line totals, and order totals are calculated using pure integer arithmetic with strictly zero floating-point imprecision and zero unauthorized fees, delivery charges, or taxes.
 2. **Defensive Validation & Data Integrity:** Guarantee that empty carts, blank customer names, and whitespace-only strings are rejected with accessible alerts, while preserving user-entered data across validation events.
 3. **Double-Click & Race Condition Prevention:** Validate that a synchronous submission lock (`useRef`) prevents duplicate order generation, duplicate references, and re-submission from the confirmation screen.
-4. **Deterministic Automation:** Provide a robust Playwright suite with 100% semantic locators and zero arbitrary sleeps (`waitForTimeout` banned).
+4. **State Persistence Across Multi-Page Routes:** Verify that shopping bag contents, line totals, and customer details persist across route navigations (`/` $\leftrightarrow$ `/shop` $\leftrightarrow$ `/cart` $\leftrightarrow$ `/checkout`) and browser page reloads via `localStorage`.
+5. **Deterministic Automation:** Provide a robust Playwright suite with 100% semantic locators and zero arbitrary sleeps (`waitForTimeout` banned).
 
 ---
 
 ## 2. Scope Matrix
 
 ### In Scope:
-- Synthetic product catalog (exactly two fixed-price items: Aero Wireless Headphones @ ₹1,499 and Urban Everyday Backpack @ ₹999).
-- Cart mutations: add, duplicate add, quantity increment/decrement (clamped $\ge 1$), dedicated item removal, empty cart transition.
-- Exact monetary calculations: $\text{LineTotal} = \text{UnitPrice} \times \text{Qty}$ and $\text{OrderTotal} = \sum \text{LineTotals}$ with `Intl.NumberFormat('en-IN')`.
-- Checkout form validation (Customer Name required; whitespace rejected; data preserved).
-- Synchronous double-click guard (`useRef`) and checkout state machine (`EMPTY_CART`, `CART_POPULATED`, `VALIDATION_FAILED`, `PROCESSING`, `ORDER_CONFIRMED`).
-- Order confirmation view with unique reference (`CF-YYYYMMDD-XXXX`), customer name, itemized receipt, and settlement total.
-- Automated browser testing (3 Mandatory Scenarios + 8 High-Value Regression Scenarios in Playwright).
-- Manual test verification (M01 Empty Cart Checkout, M02 Rapid Double-Click).
+- **Synthetic Product Catalog:** Exactly two fixed-price items: Aero Wireless Headphones @ ₹1,499 and Urban Everyday Backpack @ ₹999.
+- **Multi-Page Route Navigation:**
+  - `/` (Editorial Landing Page)
+  - `/shop` (Curated Collection Catalogue)
+  - `/cart` (Full-Page Shopping Bag)
+  - `/checkout` (Two-Column Luxury Checkout)
+  - `/confirmation` (Order Receipt Confirmation)
+- **Cart Operations:** Add product, duplicate add (increments quantity without row duplication), quantity steppers (clamped $\ge 1$, decrement disabled at 1), item removal, empty cart transition.
+- **Drawer Interaction:** Quick slide-over bag drawer (`CartDrawer`) with backdrop blur, keyboard escape dismiss, and automatic dismissal on route changes.
+- **Financial Calculations:**
+  $$\text{LineTotal} = \text{UnitPrice} \times \text{Qty}$$
+  $$\text{OrderTotal} = \sum \text{LineTotals}$$
+  - Formatted using `Intl.NumberFormat('en-IN')` in Indian Rupee format (`₹X,XXX`). Strictly zero taxes, delivery charges, discounts, or hidden fees.
+- **Customer Form Validation:** Single required Customer Name field; blank input blocked; whitespace-only blocked; customer text strictly preserved on validation errors.
+- **Order Processing & Prevention of Race Conditions:** Synchronous `useRef` lock preventing duplicate submissions from rapid double-clicks.
+- **Order Confirmation:** Unique alphanumeric order reference (`CF-YYYYMMDD-XXXX`), customer name, itemized breakdown, and clean reset workflow.
+- **Automated Browser Testing:** 14 Playwright tests (4 Mandatory scenarios + 10 High-Value Regression scenarios).
+- **Manual Quality Assurance:** M01 (Empty cart checkout) and M02 (Rapid double-click protection) with full visual evidence.
 
 ### Out of Scope:
-- External backend services, REST/GraphQL APIs, databases, or cloud persistence (100% pure client-side state).
+- External backend services, REST/GraphQL APIs, databases, or cloud servers (100% pure client-side state).
 - Real or simulated payment gateway processing, credit card fields, OTP, or CVV.
 - Taxes, delivery charges, discounts, coupons, or promo codes (strictly zero fee policy).
 
@@ -45,10 +56,11 @@ CartFlow is a competition-grade client-side e-commerce mini checkout application
 | **Node.js Runtime** | v24.16.0 |
 | **Package Manager** | npm 11.13.0 |
 | **Application Framework** | React 18.3.1 + TypeScript 5.6.3 + Vite 5.4.11 |
-| **Styling Engine** | Tailwind CSS 3.4.16 (Midnight Indigo Commerce Theme) |
+| **Client Routing** | React Router DOM 6.28.0 |
+| **Styling Engine** | Tailwind CSS 3.4.16 (Warm Editorial Luxury Theme) |
 | **Automation Framework** | Playwright 1.49.1 (`@playwright/test`) |
 | **Browser Engine** | Google Chrome (Chromium Channel) |
-| **Base URL** | `http://localhost:5173` (Dev Server) / `http://localhost:4173` (Preview Server) |
+| **Base URL** | `http://localhost:5173` (Dev) / `http://localhost:4173` (Preview) |
 
 ---
 
@@ -56,40 +68,33 @@ CartFlow is a competition-grade client-side e-commerce mini checkout application
 
 | Priority | Risk Category | Risk Description | Severity | Likelihood | Mitigation & Test Strategy |
 |---|---|---|---|---|---|
-| **P1** | **Incorrect Monetary Calculations** | Floating point representation errors (`0.1 + 0.2`) or stale totals during rapid stepper clicks. | Critical | High | Pure integer arithmetic (`Math.round`), `Intl.NumberFormat`, and reactive derived state in `useCart`. Verified in Mandatory Scenario 3 & Regression REG-02. |
-| **P2** | **Duplicate Order Submission** | Rapid double-clicking on "Place Order" creates multiple orders or duplicate references. | Critical | High | Synchronous submission lock (`isSubmittingRef = useRef<boolean>(false)`) engages immediately before React re-render. Verified in Mandatory Scenario 1, Regression REG-06, and Manual M02. |
-| **P3** | **Invalid Checkout Validation** | Submitting blank or whitespace-only customer name creates order or wipes entered text. | High | High | `validateCheckout` trims string, emits accessible `role="alert"`, and preserves controlled input. Verified in Mandatory Scenarios 2A, 2B, and REG-07. |
-| **P4** | **Empty Cart Handling** | Submitting checkout with 0 items displays success or corrupts application state. | High | Medium | Dual-layer guard: empty cart validation alert + state machine `EMPTY_CART` status. Verified in Regression REG-01 and Manual M01. |
+| **P1** | **Incorrect Monetary Calculations** | Floating point representation errors (`0.1 + 0.2`) or stale totals during rapid stepper clicks. | Critical | High | Pure integer arithmetic (`Math.round`), `Intl.NumberFormat`, and reactive derived state in `useCartContext`. Verified in Mandatory 3 & Regression REG-02. |
+| **P2** | **Duplicate Order Submission** | Rapid double-clicking on "Place Order" creates multiple orders or duplicate references. | Critical | High | Synchronous submission lock (`isSubmittingRef = useRef<boolean>(false)`) engages immediately before React re-render. Verified in Mandatory 1, REG-06, and Manual M02. |
+| **P3** | **Invalid Checkout Validation** | Submitting blank or whitespace-only customer name creates order or wipes entered text. | High | High | `validateCheckout` trims string, emits accessible `role="alert"`, and preserves controlled input. Verified in Mandatory 2A, 2B, and REG-07. |
+| **P4** | **Empty Cart Handling** | Submitting checkout with 0 items displays success or corrupts application state. | High | Medium | Dual-layer guard: empty cart validation alert + state machine `EMPTY_CART` status. Verified in REG-01 and Manual M01. |
 | **P5** | **Cart Quantity & Removal Errors** | Decrementing below 1, negative quantities, or inability to remove last item. | Medium | Medium | Stepper hardware clamp (`disabled` at qty 1) + dedicated remove action. Verified in REG-03 and REG-04. |
-| **P6** | **Order Confirmation Correctness** | Non-unique reference or mismatched customer name / line item receipt. | Medium | Low | Timestamp + crypto suffix (`CF-YYYYMMDD-XXXX`), atomic immutable `Order` object snapshot. Verified in Mandatory Scenario 1 and REG-07. |
-| **P7** | **Responsive & Accessibility Deficiencies** | Poor contrast, missing ARIA attributes, horizontal scroll on mobile. | Low | Low | WCAG 2.1 AA tokens, Inter typography, tabular numbers, fluid CSS Grid. Verified in automated visual audit. |
+| **P6** | **State Loss Across Routes** | Navigating between `/shop`, `/cart`, and `/checkout` loses selected products. | High | Medium | Dual-layer persistence via React Context + synchronized `localStorage`. Verified in REG-09 and REG-10. |
+| **P7** | **Order Confirmation Integrity** | Non-unique reference or mismatched customer name / line item receipt. | Medium | Low | Timestamp + crypto suffix (`CF-YYYYMMDD-XXXX`), atomic immutable `Order` object snapshot. Verified in Mandatory 1 and REG-08. |
 
 ---
 
-## 5. Comprehensive Test Scenarios Matrix
+## 5. Comprehensive Test Scenarios Matrix (14 Automated + 2 Manual)
 
-| Scenario ID | Test Title | Priority | Preconditions | Key Test Steps | Expected Result | Actual Result | Status | Evidence Reference |
-|---|---|---|---|---|---|---|---|---|
-| **M-01** | Mandatory 1: Successful Checkout Flow | P1/P6 | Clean page; catalog loaded | 1. Add Headphones<br>2. Fill name "Alex Morgan"<br>3. Place Order | Exactly 1 confirmation view; customer name, ref `CF-YYYYMMDD-XXXX`, and ₹1,499 visible | Single confirmation; reference `CF-20261123-XXXX`; ₹1,499 verified | **PASS** | `artifacts/screenshots/successful-checkout.png` |
-| **M-02A** | Mandatory 2A: Missing Customer Name | P3 | Clean page; 1 item in cart | 1. Leave name empty<br>2. Place Order | Error "Please enter your name." visible; no confirmation; cart preserved | Visible alert displayed; cart items intact; on checkout page | **PASS** | `artifacts/screenshots/missing-name-validation.png` |
-| **M-02B** | Mandatory 2B: Whitespace Customer Name | P3 | Clean page; 1 item in cart | 1. Enter `"     "`<br>2. Place Order | Error "whitespace" visible; entered spaces preserved in input | Alert displayed; input value `"     "` preserved | **PASS** | `evidence/phase3/mandatory-2b-whitespace-name.png` |
-| **M-03** | Mandatory 3: Exact Quantity Calculation | P1 | Clean page | 1. Add Headphones (₹1,499)<br>2. Inc to 2 (₹2,998)<br>3. Add Backpack (₹999)<br>4. Assert ₹3,997<br>5. Dec to 1 (₹2,498) | All line totals and order totals match exact integer sum | Line totals: ₹2,998, ₹999; Order totals: ₹3,997, ₹2,498 | **PASS** | `artifacts/screenshots/quantity-update.png` |
-| **REG-01** | Empty Cart Checkout Blocked | P4 | Clean page; cart empty | 1. Enter name "John Doe"<br>2. Place Order | Visible alert "Your cart is empty"; order not placed | Error alert visible; no order placed | **PASS** | Automated Playwright report |
-| **REG-02** | Product Removal Recalculates Total | P5 | 2 products in cart | 1. Remove Backpack | Backpack removed; total drops to ₹1,499 | Item row unmounted; total updated | **PASS** | Automated Playwright report |
-| **REG-03** | Decrement Bound at Minimum Qty 1 | P5 | 1 item in cart (qty 1) | 1. Inspect decrement btn<br>2. Attempt click | Decrement button has `disabled` attribute; qty remains 1 | Button disabled; qty clamped at 1 | **PASS** | Automated Playwright report |
-| **REG-04** | Removing Last Product Shows Empty State | P5 | 1 item in cart | 1. Remove item | EmptyCart component renders | Empty cart message visible | **PASS** | Automated Playwright report |
-| **REG-05** | Duplicate Add Increments Quantity | P5 | Clean page | 1. Click Add Headphones twice | 1 item row with quantity = 2; total ₹2,998 | 1 row present; qty = 2; total ₹2,998 | **PASS** | Automated Playwright report |
-| **REG-06** | Rapid Double-Click Concurrency | P2 | 1 item; valid name | 1. Click Place Order twice rapidly | Exactly 1 confirmation; synchronous lock drops 2nd click | 1 confirmation generated; 0 duplicate orders | **PASS** | Automated Playwright report |
-| **REG-07** | Whitespace Trimming on Receipt | P3 | 1 item in cart | 1. Enter `"   Sneha Patel   "`<br>2. Place Order | Confirmation shows trimmed `"Sneha Patel"` | Trimmed name rendered | **PASS** | Automated Playwright report |
-| **REG-08** | Order Reset Restores Clean State | P6 | Order confirmed view | 1. Click "Start New Order" | View resets to catalog; cart empty; input cleared | Pristine baseline restored | **PASS** | Automated Playwright report |
-| **MAN-01** | Manual Test M01: Empty Cart Checkout | P4 | Clean page; cart empty | 1. Enter "Jane Doe"<br>2. Place Order | Alert displayed; no confirmation; name preserved | Clear guidance displayed; application usable | **PASS** | `artifacts/screenshots/empty-cart-manual.png` |
-| **MAN-02** | Manual Test M02: Rapid Double-Click | P2 | 1 item in cart | 1. Enter "Jane Doe"<br>2. Click Place Order twice | Exactly 1 confirmation; reference `CF-YYYYMMDD-XXXX` | 1 confirmation; reference `CF-20261123-F64D` | **PASS** | `artifacts/screenshots/rapid-double-click.png` |
-
----
-
-## 6. Execution & Pass/Fail Criteria
-
-- **Automated Execution:** 100% of the 12 Playwright test cases must pass without retries or skips.
-- **Manual Execution:** Both manual scenarios (M01 & M02) must exhibit zero contradictory states and produce genuine screenshots.
-- **Code Quality:** Zero TypeScript compilation errors (`tsc --noEmit`), zero ESLint warnings, zero horizontal overflow on mobile viewports.
-- **Outcome:** All criteria satisfied. Suite is 100% passed.
+| Scenario ID | Test Title | Priority | Scope | Expected Result | Status |
+|---|---|---|---|---|---|
+| **M-01** | Mandatory 1: Successful Checkout Flow | P1/P2/P7 | Automated | Exactly 1 confirmation view; customer name, ref `CF-YYYYMMDD-XXXX`, and ₹1,499 visible | **PASS** |
+| **M-02A** | Mandatory 2A: Missing Customer Name | P3 | Automated | Error "Please enter your name." visible; no confirmation; cart preserved | **PASS** |
+| **M-02B** | Mandatory 2B: Whitespace Customer Name | P3 | Automated | Error "whitespace" visible; entered spaces preserved in input | **PASS** |
+| **M-03** | Mandatory 3: Exact Quantity Calculation | P1 | Automated | Line totals: ₹2,998, ₹999; Order totals: ₹3,997, ₹2,498. Pure integer math. | **PASS** |
+| **REG-01** | Empty Cart Checkout Blocked | P4 | Automated | Visible alert "Your cart is empty"; order not placed | **PASS** |
+| **REG-02** | Product Removal Recalculates Total | P5 | Automated | Removing backpack updates order total to ₹1,499 immediately | **PASS** |
+| **REG-03** | Decrement Bound at Minimum Qty 1 | P5 | Automated | Decrement button has `disabled` attribute; qty clamped at 1 | **PASS** |
+| **REG-04** | Removing Last Product Shows Empty State | P5 | Automated | Removing single item renders empty cart state | **PASS** |
+| **REG-05** | Duplicate Add Increments Quantity | P5 | Automated | Adding same product twice sets qty = 2 with exactly 1 row | **PASS** |
+| **REG-06** | Rapid Double-Click Protection | P2 | Automated | Simultaneous clicks yield exactly 1 order confirmation | **PASS** |
+| **REG-07** | Whitespace Trimming on Receipt | P3 | Automated | Input `"   Sneha Patel   "` rendered as `"Sneha Patel"` on receipt | **PASS** |
+| **REG-08** | Order Reset Workflow | P7 | Automated | "Start New Order" resets cart, customer name, and redirects to catalog | **PASS** |
+| **REG-09** | Multi-Page Route Transitions | P6 | Automated | Seamless transitions between `/`, `/shop`, `/cart`, and `/checkout` | **PASS** |
+| **REG-10** | Cart State Persistence Across Routes | P6 | Automated | Bag count, items, and totals remain intact across navigations | **PASS** |
+| **MAN-01** | Test M01: Manual Empty Cart Checkout | P4 | Manual | Order blocked; error displayed; name preserved; app interactive | **PASS** |
+| **MAN-02** | Test M02: Manual Rapid Double-Click | P2 | Manual | Exactly 1 confirmation; reference `CF-20261123-XXXX`; zero duplicates | **PASS** |

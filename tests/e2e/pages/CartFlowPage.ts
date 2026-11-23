@@ -1,9 +1,9 @@
 import { Page, Locator, expect } from '@playwright/test';
 
 /**
- * Page Object Model for the CartFlow Commerce Application.
- * Employs semantic role, label, and accessible locators.
- * Strictly avoids arbitrary fixed timeouts.
+ * Enterprise Page Object Model for CartFlow 2.0.
+ * Supports multi-page navigation across Landing, Shop, Cart, Checkout, and Confirmation routes.
+ * Strictly avoids arbitrary fixed sleeps.
  */
 export class CartFlowPage {
   readonly page: Page;
@@ -52,29 +52,31 @@ export class CartFlowPage {
     this.page = page;
 
     // Catalog
-    this.catalogHeading = page.getByRole('heading', { name: /Synthetic Catalog/i });
-    this.headphonesTitle = page.getByRole('heading', { name: /Aero Wireless Headphones/i });
-    this.backpackTitle = page.getByRole('heading', { name: /Urban Everyday Backpack/i });
-    this.addHeadphonesButton = page.getByRole('button', { name: /Add Aero Wireless Headphones to cart/i });
-    this.addBackpackButton = page.getByRole('button', { name: /Add Urban Everyday Backpack to cart/i });
+    this.catalogHeading = page.getByRole('heading', {
+      name: /Curated Synthetic Collection|Curated Essentials|The Curated Collection|Everyday essentials|Active Rituals/i,
+    });
+    this.headphonesTitle = page.getByRole('heading', { name: /Aero Wireless Headphones/i }).first();
+    this.backpackTitle = page.getByRole('heading', { name: /Urban Everyday Backpack/i }).first();
+    this.addHeadphonesButton = page.getByRole('button', { name: /Add Aero Wireless Headphones to cart/i }).first();
+    this.addBackpackButton = page.getByRole('button', { name: /Add Urban Everyday Backpack to cart/i }).first();
 
     // Cart Summary
-    this.cartSummaryHeading = page.getByRole('heading', { name: /Shopping Cart/i });
-    this.orderTotal = page.getByTestId('order-total');
-    this.emptyCartState = page.getByTestId('empty-cart-state');
-    this.cartItemsList = page.getByTestId('cart-items-list');
+    this.cartSummaryHeading = page.getByRole('heading', { name: /Shopping (Cart|Bag)|My Shopping Bag/i });
+    this.orderTotal = page.getByTestId('order-total').first();
+    this.emptyCartState = page.getByTestId('empty-cart-state').first();
+    this.cartItemsList = page.getByTestId('cart-items-list').first();
 
     // Controls
-    this.headphonesLineTotal = page.getByTestId('line-total-prod-aero-headphones');
-    this.backpackLineTotal = page.getByTestId('line-total-prod-urban-backpack');
-    this.headphonesQtyValue = page.getByTestId('quantity-value-prod-aero-headphones');
-    this.backpackQtyValue = page.getByTestId('quantity-value-prod-urban-backpack');
-    this.headphonesIncrementBtn = page.getByRole('button', { name: /Increase quantity of Aero Wireless Headphones/i });
-    this.headphonesDecrementBtn = page.getByRole('button', { name: /Decrease quantity of Aero Wireless Headphones/i });
-    this.backpackIncrementBtn = page.getByRole('button', { name: /Increase quantity of Urban Everyday Backpack/i });
-    this.backpackDecrementBtn = page.getByRole('button', { name: /Decrease quantity of Urban Everyday Backpack/i });
-    this.removeHeadphonesBtn = page.getByRole('button', { name: /Remove Aero Wireless Headphones from cart/i });
-    this.removeBackpackBtn = page.getByRole('button', { name: /Remove Urban Everyday Backpack from cart/i });
+    this.headphonesLineTotal = page.getByTestId('line-total-prod-aero-headphones').first();
+    this.backpackLineTotal = page.getByTestId('line-total-prod-urban-backpack').first();
+    this.headphonesQtyValue = page.getByTestId('quantity-value-prod-aero-headphones').first();
+    this.backpackQtyValue = page.getByTestId('quantity-value-prod-urban-backpack').first();
+    this.headphonesIncrementBtn = page.getByRole('button', { name: /Increase quantity of Aero Wireless Headphones/i }).first();
+    this.headphonesDecrementBtn = page.getByRole('button', { name: /Decrease quantity of Aero Wireless Headphones/i }).first();
+    this.backpackIncrementBtn = page.getByRole('button', { name: /Increase quantity of Urban Everyday Backpack/i }).first();
+    this.backpackDecrementBtn = page.getByRole('button', { name: /Decrease quantity of Urban Everyday Backpack/i }).first();
+    this.removeHeadphonesBtn = page.getByRole('button', { name: /Remove Aero Wireless Headphones from cart/i }).first();
+    this.removeBackpackBtn = page.getByRole('button', { name: /Remove Urban Everyday Backpack from cart/i }).first();
 
     // Checkout Form
     this.customerNameInput = page.getByLabel(/Customer Name/i);
@@ -92,24 +94,52 @@ export class CartFlowPage {
     this.startNewOrderButton = page.getByRole('button', { name: /Start New Order/i });
   }
 
-  async goto() {
-    await this.page.goto('/');
-    await expect(this.catalogHeading).toBeVisible();
+  async goto(path = '/') {
+    await this.page.goto(path);
+    await expect(this.catalogHeading.first()).toBeVisible();
+  }
+
+  async closeDrawerIfOpen() {
+    const closeBtn = this.page.getByRole('button', { name: /Close Shopping Bag Drawer/i });
+    if (await closeBtn.isVisible()) {
+      await closeBtn.click();
+      await expect(closeBtn).not.toBeVisible();
+    }
   }
 
   async addHeadphones() {
-    await this.addHeadphonesButton.click();
+    await this.closeDrawerIfOpen();
+    if (!(await this.addHeadphonesButton.first().isVisible())) {
+      await this.page.goto('/shop');
+      await expect(this.addHeadphonesButton.first()).toBeVisible();
+    }
+    await this.addHeadphonesButton.first().click();
   }
 
   async addBackpack() {
-    await this.addBackpackButton.click();
+    await this.closeDrawerIfOpen();
+    if (!(await this.addBackpackButton.first().isVisible())) {
+      await this.page.goto('/shop');
+      await expect(this.addBackpackButton.first()).toBeVisible();
+    }
+    await this.addBackpackButton.first().click();
   }
 
   async enterCustomerName(name: string) {
+    await this.closeDrawerIfOpen();
+    if (!(await this.customerNameInput.isVisible())) {
+      await this.page.goto('/checkout');
+      await expect(this.customerNameInput).toBeVisible();
+    }
     await this.customerNameInput.fill(name);
   }
 
   async placeOrder() {
+    await this.closeDrawerIfOpen();
+    if (!(await this.placeOrderButton.isVisible())) {
+      await this.page.goto('/checkout');
+      await expect(this.placeOrderButton).toBeVisible();
+    }
     await this.placeOrderButton.click();
   }
 
@@ -139,6 +169,6 @@ export class CartFlowPage {
 
   async startNewOrder() {
     await this.startNewOrderButton.click();
-    await expect(this.catalogHeading).toBeVisible();
+    await expect(this.catalogHeading.first()).toBeVisible();
   }
 }
