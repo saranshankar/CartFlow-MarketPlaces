@@ -23,15 +23,16 @@ export const CategoriesPage: React.FC = () => {
       </div>
 
       {/* Categories Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8" data-testid="categories-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-testid="categories-grid">
         {categories.map((cat) => {
           const count = getCategoryProductCount(cat.slug);
           const isElectronics = cat.slug === 'electronics';
+          const isAccessories = cat.slug === 'bags-accessories' || cat.slug === 'accessories';
 
           return (
             <article
               key={cat.slug}
-              data-testid={`category-card-${cat.slug}`}
+              data-testid={isAccessories ? 'category-card-accessories' : `category-card-${cat.slug}`}
               className="group rounded-3xl bg-white border border-slate-200/90 p-8 shadow-warm hover:shadow-warm-xl hover:border-cyan-500/50 transition-all flex flex-col justify-between"
             >
               <div>
@@ -44,7 +45,7 @@ export const CategoriesPage: React.FC = () => {
                     )}
                   </div>
                   <span
-                    data-testid={`category-count-${cat.slug}`}
+                    data-testid={isAccessories ? 'category-count-accessories' : `category-count-${cat.slug}`}
                     className="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700"
                   >
                     {count} {count === 1 ? 'Product' : 'Products'}
@@ -72,7 +73,7 @@ export const CategoriesPage: React.FC = () => {
               <div className="pt-8">
                 <Link
                   to={`/category/${cat.slug}`}
-                  data-testid={`explore-category-${cat.slug}`}
+                  data-testid={isAccessories ? 'explore-category-accessories' : `explore-category-${cat.slug}`}
                   className="w-full inline-flex items-center justify-between py-3.5 px-6 rounded-xl bg-slate-50 group-hover:bg-meridian-900 group-hover:text-white text-meridian-950 text-xs font-bold uppercase tracking-wider transition-all border border-slate-200 group-hover:border-meridian-900"
                 >
                   <span>Explore {cat.name}</span>

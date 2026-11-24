@@ -17,6 +17,7 @@ import { useCartContext } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { formatCurrency } from '../utils/currency';
 import { ProductCard } from '../components/catalog/ProductCard';
+import { ProductArtwork } from '../components/catalog/ProductArtwork';
 import { DemoFeedbackSection } from '../components/pdp/DemoFeedbackSection';
 
 export const ProductDetailPage: React.FC = () => {
@@ -27,13 +28,19 @@ export const ProductDetailPage: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
 
-  // Lookup in synthetic catalog
+  // Lookup in central 30-product catalog
   const product = PRODUCTS.find(
-    (p) => p.id === id || p.id === `prod-${id}` || p.name.toLowerCase().includes(id.toLowerCase())
+    (p) => p.id === id || p.slug === id || p.id === `prod-${id}` || p.name.toLowerCase().includes(id.toLowerCase())
   );
 
-  // Find the other synthetic product for related discovery
-  const relatedProduct = product ? PRODUCTS.find((p) => p.id !== product.id) : null;
+  // Find related products from the same collection
+  const relatedProducts = product
+    ? PRODUCTS.filter(
+        (p) =>
+          (p.collectionSlug === product.collectionSlug || p.category === product.category) &&
+          p.id !== product.id
+      ).slice(0, 3)
+    : [];
   const wishlisted = product ? isInWishlist(product.id) : false;
 
   const handleAddToCart = () => {
@@ -81,55 +88,9 @@ export const ProductDetailPage: React.FC = () => {
     );
   }
 
-  // Bespoke SVG Illustration
-  const renderVisual = () => {
-    if (product.id === 'prod-aero-headphones') {
-      return (
-        <svg
-          viewBox="0 0 240 240"
-          className="w-full h-full max-h-96 object-contain p-8 text-meridian-900"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <circle cx="120" cy="120" r="95" fill="#F1F5F9" />
-          <path d="M60 135 C60 65 180 65 180 135" stroke="#0F1E36" strokeWidth="12" strokeLinecap="round" />
-          <path d="M75 110 C75 80 165 80 165 110" stroke="#00A3C4" strokeWidth="4" strokeLinecap="round" />
-          <rect x="40" y="115" width="36" height="70" rx="18" fill="#172B4D" stroke="#0F1E36" strokeWidth="3" />
-          <rect x="46" y="125" width="24" height="50" rx="12" fill="#E2E8F0" />
-          <rect x="164" y="115" width="36" height="70" rx="18" fill="#172B4D" stroke="#0F1E36" strokeWidth="3" />
-          <rect x="170" y="125" width="24" height="50" rx="12" fill="#E2E8F0" />
-          <circle cx="58" cy="116" r="5" fill="#00A3C4" />
-          <circle cx="182" cy="116" r="5" fill="#00A3C4" />
-        </svg>
-      );
-    }
-
-    return (
-      <svg
-        viewBox="0 0 240 240"
-        className="w-full h-full max-h-96 object-contain p-8 text-meridian-900"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <circle cx="120" cy="120" r="95" fill="#F1F5F9" />
-        <path d="M100 62 C100 45 140 45 140 62" stroke="#00A3C4" strokeWidth="7" strokeLinecap="round" />
-        <path
-          d="M70 85 C70 68 170 68 170 85 L176 195 C176 203 168 210 160 210 L80 210 C72 210 64 203 64 195 Z"
-          fill="#0F1E36"
-          stroke="#0A1424"
-          strokeWidth="3"
-        />
-        <rect x="80" y="125" width="80" height="65" rx="10" fill="#172B4D" stroke="#00A3C4" strokeWidth="2.5" />
-        <line x1="88" y1="145" x2="152" y2="145" stroke="#38BDF8" strokeWidth="2.5" strokeDasharray="4 3" />
-        <circle cx="92" cy="100" r="3.5" fill="#00A3C4" />
-        <circle cx="148" cy="100" r="3.5" fill="#00A3C4" />
-      </svg>
-    );
-  };
-
-  const categorySlug = product.category.toLowerCase().includes('elec') ? 'electronics' : 'accessories';
+  const categorySlug =
+    product.collectionSlug ||
+    (product.category.toLowerCase().includes('elec') ? 'electronics' : 'accessories');
 
   return (
     <div
@@ -167,7 +128,10 @@ export const ProductDetailPage: React.FC = () => {
           </div>
 
           <div className="w-full flex items-center justify-center py-4">
-            {renderVisual()}
+            <ProductArtwork
+              product={product}
+              className="w-full h-full max-h-96 object-contain p-8 text-meridian-900"
+            />
           </div>
         </div>
 
@@ -334,32 +298,35 @@ export const ProductDetailPage: React.FC = () => {
       {/* Demo Feedback & Review Section (Phase 3B) */}
       <DemoFeedbackSection productId={product.id} productName={product.name} />
 
-      {/* Related Discovery Section (Showing the other existing product without inventing items) */}
-      {relatedProduct && (
+      {/* Related Discovery Section */}
+      {relatedProducts.length > 0 && (
         <section aria-labelledby="related-heading" className="space-y-6 pt-6 border-t border-slate-200">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-xs font-extrabold uppercase tracking-wider text-cyan-600 block mb-1">
-                Complementary Essential
+                More in {product.category}
               </span>
               <h2 id="related-heading" className="font-display text-2xl font-bold text-meridian-950">
-                Other Item in the Collection
+                Related Marketplace Essentials
               </h2>
             </div>
             <Link
-              to="/shop"
+              to={`/category/${categorySlug}`}
               className="text-xs font-bold text-cyan-600 hover:text-cyan-700 uppercase tracking-wider"
             >
               View Full Collection &rarr;
             </Link>
           </div>
 
-          <div className="max-w-md">
-            <ProductCard
-              product={relatedProduct}
-              quantityInCart={getItemQuantity(relatedProduct.id)}
-              onAddToCart={addToCart}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedProducts.map((rel) => (
+              <ProductCard
+                key={rel.id}
+                product={rel}
+                quantityInCart={getItemQuantity(rel.id)}
+                onAddToCart={addToCart}
+              />
+            ))}
           </div>
         </section>
       )}

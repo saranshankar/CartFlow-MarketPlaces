@@ -103,6 +103,7 @@ export const CartPage: React.FC = () => {
                 </div>
                 <span
                   data-testid="order-total"
+                  data-cart-total="true"
                   className="text-3xl font-extrabold text-forest-900 tabular-nums font-sans"
                   aria-live="polite"
                 >

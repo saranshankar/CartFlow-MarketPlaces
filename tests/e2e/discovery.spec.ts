@@ -161,8 +161,8 @@ test.describe('CartFlow 3.0 - Category Discovery Automation', () => {
     await expect(page.getByTestId('category-card-electronics')).toBeVisible();
     await expect(page.getByTestId('category-card-accessories')).toBeVisible();
 
-    await expect(page.getByTestId('category-count-electronics')).toHaveText('1 Product');
-    await expect(page.getByTestId('category-count-accessories')).toHaveText('1 Product');
+    await expect(page.getByTestId('category-count-electronics')).toHaveText(/6 Products?/);
+    await expect(page.getByTestId('category-count-accessories')).toHaveText(/5 Products?/);
   });
 
   test('CAT-02: Navigating to category detail filters products correctly', async ({ page }) => {
@@ -202,12 +202,12 @@ test.describe('CartFlow 3.0 - Explore Page Filtering & Sorting', () => {
     // 1. Sort Low to High
     await sortSelect.selectOption('price-asc');
     const firstProductLow = page.locator('[data-testid="product-catalog-grid"] article').first();
-    await expect(firstProductLow.getByRole('heading', { name: 'Urban Everyday Backpack' })).toBeVisible();
+    await expect(firstProductLow.getByRole('heading', { name: 'Deep Tissue Trigger Point Massage Roller Ball' })).toBeVisible();
 
     // 2. Sort High to Low
     await sortSelect.selectOption('price-desc');
     const firstProductHigh = page.locator('[data-testid="product-catalog-grid"] article').first();
-    await expect(firstProductHigh.getByRole('heading', { name: 'Aero Wireless Headphones' })).toBeVisible();
+    await expect(firstProductHigh.getByRole('heading', { name: 'Pulse Dynamic Smartwatch' })).toBeVisible();
   });
 
   test('EXP-02: Category filter chips filter product view', async ({ page }) => {

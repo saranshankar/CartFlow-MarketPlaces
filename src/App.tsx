@@ -14,6 +14,11 @@ import { ShopPage } from './pages/ShopPage';
 import { ExplorePage } from './pages/ExplorePage';
 import { CategoriesPage } from './pages/CategoriesPage';
 import { CategoryDetailPage } from './pages/CategoryDetailPage';
+import { CollectionsPage } from './pages/CollectionsPage';
+import { CollectionDetailPage } from './pages/CollectionDetailPage';
+import { SearchResultsPage } from './pages/SearchResultsPage';
+import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
 import { WishlistPage } from './pages/WishlistPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
@@ -54,12 +59,17 @@ const AppContent: React.FC = () => {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/category/:slug" element={<CategoryDetailPage />} />
+          <Route path="/collections" element={<CollectionsPage />} />
+          <Route path="/collection/:slug" element={<CollectionDetailPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
           <Route path="/order-confirmed" element={<ConfirmationPage />} />
+          <Route path="/search" element={<SearchResultsPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
       </main>

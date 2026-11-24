@@ -1,289 +1,164 @@
-# CartFlow 3.0 – Mini Checkout & Browser Test Suite
-> **Enterprise SDET Intern Hackathon Submission**  
-> Evaluated on:
-> - **Solution Completeness & Correctness:** 35%
-> - **Technical Execution:** 25%
-> - **Testing & Reliability:** 25%
-> - **Documentation & Clarity:** 15%
+# CartFlow 4.0 — Polished Multi-Collection E-Commerce Marketplace
+> **Enterprise SDET Intern Hackathon & Release Platform**  
+> **Release Branch:** `feature/cartflow-4-multi-collection`  
+> **Baseline Commit:** `52eca15` | **Preserved Archive:** `CartFlow_3.0_Final_Submission.zip` (SHA-256: `b6e806922d6be62788d97a82079a02e2b1acd40f64555b4d47411a8e9a7aa247`)  
+> **Automated Test Quality Gate:** **73 / 73 PLAYWRIGHT TESTS PASSING (100% SUCCESS RATE)**
 
 ---
 
 ## 1. Project Title & Overview
-**CartFlow 3.0** is an enterprise-grade client-side e-commerce marketplace and automated browser testing platform built with React 18, TypeScript (strict mode), Tailwind CSS, Vite, and Playwright. Inspired by modern retail architectures (*Amazon, Flipkart, Verdant, Gucci*), CartFlow 3.0 implements the **Meridian Modern Marketplace** design system while strictly honoring the challenge specifications: pure integer financial arithmetic, concurrency locking, accessible semantic UI, and 55 comprehensive Playwright automation scenarios.
+**CartFlow 4.0** is an enterprise-grade client-side multi-collection e-commerce marketplace and automated browser testing platform built with React 18, TypeScript (strict mode), Tailwind CSS, Vite, and Playwright. 
+
+Building upon the approved **CartFlow 3.0** baseline, CartFlow 4.0 transforms the application into a complete, multi-collection marketplace featuring **30 demonstration products across 6 curated collections**, resolution-independent local vector artwork, multi-attribute global search, 12 marketplace routes (plus 4 backward-compatible legacy routes), pure integer monetary math, and concurrency locking.
 
 ---
 
-## 2. Problem Statement
-Commercial e-commerce web applications routinely suffer from critical quality regressions:
-1. **Floating-point rounding bugs:** Displaying inaccurate prices such as `₹1499.0000000000002` during quantity updates.
-2. **Duplicate order creation:** Customers double-clicking "Place Order" under network lag or rendering delay, triggering duplicate transactions.
-3. **Destructive validation failures:** Wiping customer-entered fields or clearing the shopping cart on form rejection.
-4. **Flaky browser automation:** Tests that rely on arbitrary timeouts (`page.waitForTimeout()`), dynamic IDs, or shared mutable state.
-5. **Accessibility barriers:** Inaccessible icon buttons, missing form associations, and missing skip links for keyboard navigation.
+## 2. Baseline Preservation & Challenge Continuity
+CartFlow 4.0 was developed under strict regression-free engineering protocols:
+- **Baseline Release Archive Preserved:** The original CartFlow 3.0 release archive (`CartFlow_3.0_Final_Submission.zip`) remains completely untouched and verifiable.
+- **Anchor Products Preserved:** The original synthetic challenge products retain their exact IDs, prices, and test locators:
+  - *Aero Wireless Headphones* (`prod-aero-headphones`, ₹1,499)
+  - *Urban Everyday Backpack* (`prod-urban-backpack`, ₹999)
+- **100% Baseline Suite Execution:** All 56 original CartFlow 3.0 automated tests pass without modification alongside 17 new CartFlow 4.0 multi-collection verification scenarios (total: 73 tests).
+- **Backward-Compatible Routes:** Legacy routes (`/shop`, `/categories`, `/category/:slug`, `/confirmation`) remain active aliases.
 
 ---
 
-## 3. Project Objectives
-- Implement a 100% deterministic, pure client-side commerce engine with **zero external dependencies or mock servers**.
-- Strictly bound the catalog to exactly **two fixed-price synthetic products**:
-  - *Aero Wireless Headphones* (`₹1,499`)
-  - *Urban Everyday Backpack* (`₹999`)
-- Guarantee pure integer monetary calculations with zero floating-point accumulation errors.
-- Prevent duplicate order creation via a synchronous `useRef` lock.
-- Deliver full keyboard, screen-reader, and responsive accessibility (WCAG 2.1 AA target).
-- Provide competition-grade test coverage (55 passing Playwright scenarios) with comprehensive manual testing documentation and screenshot evidence.
+## 3. Product Catalogue & Collections (30 Products across 6 Collections)
+
+| Collection | Slug | Product Count | Price Range (₹) | Anchor Demonstration Product |
+| :--- | :--- | :---: | :---: | :--- |
+| **Electronics** | `electronics` | 6 | ₹1,299 – ₹3,499 | Aero Wireless Headphones (`prod-aero-headphones`, ₹1,499) |
+| **Fashion** | `fashion` | 5 | ₹799 – ₹2,499 | Meridian Minimalist Linen Overshirt (`prod-linen-overshirt`, ₹1,799) |
+| **Home & Living** | `home-living` | 5 | ₹599 – ₹2,299 | Hand-Poured Botanical Soy Candle Set (`prod-soy-candle-set`, ₹899) |
+| **Bags & Accessories** | `bags-accessories` | 5 | ₹749 – ₹2,799 | Urban Everyday Backpack (`prod-urban-backpack`, ₹999) |
+| **Fitness & Lifestyle** | `fitness-lifestyle` | 5 | ₹349 – ₹1,899 | Studio Pure Insulated Thermal Flask (`prod-insulated-flask`, ₹799) |
+| **Stationery** | `stationery` | 4 | ₹399 – ₹899 | Heavyweight Hardcover Dot-Grid Journal (`prod-dotgrid-journal`, ₹549) |
+| **Total Marketplace** | **6 Collections** | **30 Products** | **₹349 – ₹3,499** | **Pure Integer Arithmetic • Zero Floats** |
+
+*For complete product specifications, dimensions, materials, and tags, see [`docs/PRODUCT_CATALOGUE.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/PRODUCT_CATALOGUE.md).*
 
 ---
 
-## 4. Features Implemented
-- **Global Search & Autocomplete:** Real-time search by product name and category, debounced autocomplete with Arrow/Enter/Escape keyboard navigation, and clear button.
-- **Wishlist Engine:** Persistent client-side wishlist with heart toggles, live header counter badge, and "Move to Bag" actions.
-- **Department & Category Discovery:** Directory view (`/categories`) and dedicated department filters (`/category/electronics`, `/category/accessories`).
-- **Product Detail Pages (PDP):** Route `/product/:id` featuring high-resolution local vector artwork, feature highlights, quantity selector ($1 \le Q \le 10$), "Add to Bag", and related item recommendations.
-- **Demonstration Feedback Section:** Explicitly labeled demo feedback component with clear non-commercial disclaimers, star ratings, and local session review submission.
-- **Interactive Cart & Slide-Over Drawer:** Real-time quantity steppers, item removal, line totals, and slide-over drawer accessible from any route.
-- **Defensive Checkout Form:** Single required field (*Customer Name*), rejecting empty and whitespace-only submissions while preserving customer input on failure.
-- **Synchronous Concurrency Lock:** Prevents double submissions on rapid clicks.
-- **Order Confirmation Receipt:** Generates reference `CF-YYYYMMDD-XXXX`, itemized summary, and full application reset.
-- **Keyboard Skip Navigation:** Accessible "Skip to main content" link and polite screen-reader live announcements.
+## 4. Key Architectural Capabilities
+
+### 4.1 Resolution-Independent Local Vector Artwork
+- Every one of the 30 products is paired with bespoke, high-fidelity SVG graphics in [`ProductArtwork.tsx`](file:///c:/Users/HEMANTH/Documents/SDETintern/src/components/catalog/ProductArtwork.tsx).
+- 100% offline-safe; eliminates external CDN image dependencies, broken links, or security vulnerabilities.
+
+### 4.2 Multi-Attribute Search & Discovery Engine
+- **Global Combobox Search:** Debounced full-text search across product names, categories, descriptions, features, tags, and keywords with full WAI-ARIA combobox pattern and keyboard navigation.
+- **Dedicated Results Page:** Query-driven exploration at `/search?q=query`.
+- **Catalogue Explorer (`/explore`):** Interactive collection chips, minimum/maximum price boundary clamping, 6 sorting modes (Featured, Price: Low to High, Price: High to Low, Name: A to Z, Name: Z to A, Newest Arrivals), and instant filter reset.
+- **Collection Storefronts (`/collection/:slug`):** Dedicated collection pages with in-collection search filters.
+
+### 4.3 High-Precision Cart & Resilient State
+- **Dual Presentation:** Accessible slide-over cart drawer available across all routes, alongside a dedicated full-page shopping bag (`/cart`).
+- **Dynamic Quantity Steppers:** Constrained between $1 \le Q \le 10$ with synchronous line-total ($P \times Q$) and order-total recomputation.
+- **Persistence:** Automatic bidirectional sync with `localStorage` and fault-tolerant fallbacks for private browsing.
+
+### 4.4 Defensive Checkout & Concurrency Protection
+- **Single-Field Validation:** Validates required Customer Name with strict whitespace rejection.
+- **Non-Destructive Validation Failures:** Rejection preserves user input and shopping bag state.
+- **Synchronous Concurrency Lock:** Atomic `useRef` lock neutralizes rapid double-clicks on "Place Order", guaranteeing exactly one order receipt and reference (`CF-YYYYMMDD-XXXX`).
 
 ---
 
 ## 5. Technology Stack
 - **Runtime & Environment:** Node.js v24.16.0, npm 11.13.0
 - **Framework & Language:** React 18.3.1, TypeScript 5.6.3 (strict mode)
-- **Styling & Design System:** Tailwind CSS 3.4.16, Lucide React 0.469.0
+- **Styling & Design System:** Tailwind CSS 3.4.16, Lucide React 0.469.0 (Meridian Modern Marketplace)
 - **Build Tool:** Vite 5.4.11
 - **Browser Automation:** Playwright 1.49.1 (Chromium & Microsoft Edge)
 - **Code Quality:** ESLint 8.57.1, TypeScript Compiler (`tsc --noEmit`)
 
 ---
 
-## 6. Application Architecture
-CartFlow 3.0 follows a modular unidirectional React component architecture:
-```
-App (Router, Skip Link, Live Region)
- ├── TopUtilityBar (Trust badges, currency, test suite indicator)
- ├── MarketplaceHeader (Branding, SearchBar, Wishlist badge, Cart button)
- ├── CategoryNavigation (Department strip)
- ├── CartDrawer (Slide-over bag with accessible Escape/backdrop dismiss)
- ├── Main Content Routes
- │    ├── LandingPage (Hero, departments, curated grid)
- │    ├── ShopPage (Full product collection)
- │    ├── ExplorePage (Search query, category chips, sorting)
- │    ├── CategoriesPage (Department directory)
- │    ├── CategoryDetailPage (Filtered department view)
- │    ├── ProductDetailPage (PDP with artwork, specs, stepper, demo reviews)
- │    ├── WishlistPage (Saved items with move-to-bag)
- │    ├── CartPage (Full shopping bag with line totals)
- │    ├── CheckoutPage (Verification form & sticky order summary)
- │    └── ConfirmationPage (Order receipt with reference CF-YYYYMMDD-XXXX)
- ├── MobileBottomNav (Persistent mobile bottom navigation)
- └── Footer (Directory links, accessibility note, SDET guarantees)
-```
+## 6. Route Architecture Reference
+
+| Route | View Component | Description |
+| :--- | :--- | :--- |
+| `/` | `LandingPage.tsx` | Marketplace storefront with hero, 6 collections, featured strip, trending |
+| `/explore` | `ExplorePage.tsx` | Multi-attribute catalogue search, collection chips, price bounds, 6 sort modes |
+| `/collections` | `CollectionsPage.tsx` | Visual directory of all 6 collections with dynamic counts |
+| `/collection/:slug` | `CollectionDetailPage.tsx` | Slug-filtered collection view with contextual search and filters |
+| `/product/:id` | `ProductDetailPage.tsx` | PDP with vector artwork, specs, quantity bounds, related recommendations |
+| `/wishlist` | `WishlistPage.tsx` | Saved items view with individual and bulk "Move to Bag" |
+| `/cart` | `CartPage.tsx` | Dedicated full-page shopping cart with steppers and live totals |
+| `/checkout` | `CheckoutPage.tsx` | Defensive single-field checkout with non-destructive validation |
+| `/order-confirmed` | `ConfirmationPage.tsx` | Settled order receipt and reference generator |
+| `/search` | `SearchResultsPage.tsx` | Query-filtered search results page (`?q=...`) |
+| `/about` | `AboutPage.tsx` | Architectural documentation, pure integer math & SDET philosophy |
+| `/contact` | `ContactPage.tsx` | Interactive customer service simulation with reference generation |
+| `/shop` | `ShopPage.tsx` | Legacy baseline catalog (backward-compatible alias) |
+| `/categories` | `CategoriesPage.tsx` | Legacy category directory (backward-compatible alias) |
+| `/category/:slug` | `CategoryDetailPage.tsx` | Legacy category filter (backward-compatible alias) |
+| `/confirmation` | `ConfirmationPage.tsx` | Legacy checkout receipt (backward-compatible alias) |
+
+*For complete route contracts and deep-link details, see [`docs/ROUTE_REFERENCE.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/ROUTE_REFERENCE.md).*
 
 ---
 
-## 7. Project Directory Structure
+## 7. Setup & Execution Instructions
+
+### Clean Local Installation
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Run local development server
+npm run dev
+
+# 3. Compile production build
+npm run build
+
+# 4. Preview production build locally
+npm run preview
 ```
-c:\Users\HEMANTH\Documents\SDETintern\
-├── artifacts/
-│   ├── reports/
-│   │   └── playwright-report/        # HTML test report
-│   └── screenshots/                   # Verified screenshot evidence
-├── docs/
-│   ├── TEST_PLAN.md                  # Comprehensive SDET test plan
-│   ├── TEST_EXECUTION_REPORT.md      # Test results and pass matrix
-│   ├── ACCESSIBILITY_REPORT.md       # WCAG & semantic audit report
-│   └── ARCHITECTURE.md               # Technical architecture documentation
-├── evidence/
-│   └── phase3/                       # Automated scenario screenshot captures
-├── scripts/
-│   ├── audit-ui-ux.mjs               # Automated viewport & route auditor
-│   ├── execute-manual-tests.mjs      # Manual QA runner (M01, M02 & viewports)
-│   ├── verify-phase1.mjs             # Phase 1 verification script
-│   └── verify-phase2.mjs             # Phase 2 verification script
-├── src/
-│   ├── components/
-│   │   ├── cart/                     # CartItem, CartDrawer, EmptyCart
-│   │   ├── catalog/                  # ProductCard, ProductGrid
-│   │   ├── checkout/                 # CheckoutForm, OrderSummary
-│   │   ├── common/                   # SearchBar, ValidationMessage
-│   │   ├── layout/                   # Header, TopUtility, MobileNav, Footer
-│   │   └── pdp/                      # DemoFeedbackSection
-│   ├── context/                      # CartContext, WishlistContext
-│   ├── data/                         # products.ts (2 synthetic products)
-│   ├── pages/                        # 10 application page views
-│   ├── types/                        # TypeScript domain interfaces
-│   └── utils/                        # Pure calculations, search, formatting
-├── tests/
-│   └── e2e/
-│       ├── pages/CartFlowPage.ts     # Enterprise Page Object Model
-│       ├── accessibility.spec.ts     # Phase 4C semantic & a11y tests (7 tests)
-│       ├── checkout.spec.ts          # Mandatory 1, 2A, 2B, 3 & regression (14 tests)
-│       ├── discovery.spec.ts         # Search, Wishlist, Category tests (19 tests)
-│       ├── pdp.spec.ts               # Product Detail Page tests (9 tests)
-│       └── quality-engineering.spec.ts# Boundaries, console, persistence (6 tests)
-├── playwright.config.ts              # Playwright configuration
-├── tailwind.config.js                # Meridian Modern Marketplace theme
-├── tsconfig.json                     # Strict TypeScript configuration
-└── package.json                      # Project dependencies and scripts
+
+### Static Quality Verification
+```bash
+# Typecheck TypeScript (strict mode)
+npm run typecheck
+
+# Lint codebase (0 errors, 0 warnings)
+npm run lint
+```
+
+### Playwright Automated Browser Testing
+```bash
+# Run complete test suite (73 tests)
+npm run test:e2e
+
+# Run CartFlow 4.0 Multi-Collection Suite
+npx playwright test tests/e2e/marketplace-v4.spec.ts
+
+# Run on Microsoft Edge
+npx playwright test --project=msedge
 ```
 
 ---
 
-## 8. Installation & Execution Instructions
-1. **Prerequisites:**
-   - Node.js $\ge$ 18 (Tested on Node.js v24.16.0)
-   - npm $\ge$ 9 (Tested on npm 11.13.0)
-   - Google Chrome or Microsoft Edge browser installed
+## 8. Test Execution Metrics (73 / 73 PASSING)
 
-2. **Clone & Install:**
-   ```bash
-   cd c:\Users\HEMANTH\Documents\SDETintern
-   npm install
-   ```
-
-3. **Start Local Development Server:**
-   ```bash
-   npm run dev
-   ```
-   Open `http://localhost:5173` in any modern web browser.
-
-4. **Production Build & Preview:**
-   ```bash
-   npm run build
-   npm run preview
-   ```
+| Suite File | Scope | Tests | Pass Rate | Status |
+| :--- | :--- | :---: | :---: | :---: |
+| `tests/e2e/checkout.spec.ts` | Mandatory Challenge & Regression Scenarios | 14 | 100% | **PASS** |
+| `tests/e2e/discovery.spec.ts` | Global Search, Wishlist & Categories | 19 | 100% | **PASS** |
+| `tests/e2e/accessibility.spec.ts` | WCAG 2.1 AA & Keyboard Navigation | 7 | 100% | **PASS** |
+| `tests/e2e/pdp.spec.ts` | Product Detail Pages & Recommendations | 9 | 100% | **PASS** |
+| `tests/e2e/quality-engineering.spec.ts` | Concurrency, Storage & Edge Cases | 7 | 100% | **PASS** |
+| `tests/e2e/marketplace-v4.spec.ts` | CartFlow 4.0 Multi-Collection Engine | 17 | 100% | **PASS** |
+| **Total Automated Coverage** | **Complete CartFlow 4.0 Platform** | **73** | **100%** | **PASS** |
 
 ---
 
-## 9. Available npm Scripts
-| Command | Description |
-|---|---|
-| `npm run dev` | Starts Vite development server at `http://localhost:5173` |
-| `npm run build` | Compiles TypeScript and builds production bundle into `dist/` |
-| `npm run preview` | Previews production build locally at `http://localhost:4173` |
-| `npm run typecheck` | Executes `tsc --noEmit` to verify strict TypeScript types |
-| `npm run lint` | Runs ESLint analysis across all `.ts` and `.tsx` source files |
-| `npm run test` | Executes all 55 Playwright end-to-end tests |
-| `npm run test:e2e` | Runs complete Playwright browser test suite |
-| `npm run test:headed` | Runs Playwright tests with visible browser window |
-| `npm run test:ui` | Launches Playwright interactive graphical test UI |
-| `npm run test:report` | Opens interactive HTML test execution report |
+## 9. Comprehensive Documentation Suite
 
----
-
-## 10. Product Catalog & Pricing
-The application contains strictly two fixed-price synthetic catalog items:
-| SKU ID | Product Name | Department | Unit Price | Features |
-|---|---|---|:---:|---|
-| `prod-aero-headphones` | **Aero Wireless Headphones** | Electronics | **₹1,499** | Hybrid ANC, 40-hr reserve, Bluetooth 5.3, USB-C |
-| `prod-urban-backpack` | **Urban Everyday Backpack** | Accessories | **₹999** | Weatherproof canvas, 16" laptop sleeve, anti-theft |
-
-*Formula Guarantee:*
-- $\text{LineTotal} = \text{UnitPrice} \times \text{Quantity}$
-- $\text{OrderTotal} = \sum \text{LineTotals}$
-- Strictly pure integer sums formatted using `Intl.NumberFormat('en-IN')` in Indian Rupee format (`₹X,XXX`). Zero fees, zero hidden taxes.
-
----
-
-## 11. Application Routes
-| URL Path | Component | Purpose |
-|---|---|---|
-| `/` | `LandingPage` | Marketplace hero, featured departments, daily deal, and curated collection |
-| `/shop` | `ShopPage` | Full catalog view with direct "Add to Bag" and Wishlist actions |
-| `/explore` | `ExplorePage` | Search query engine with category chips and price sorting |
-| `/categories` | `CategoriesPage` | Department directory with computed item counts |
-| `/category/:slug` | `CategoryDetailPage` | Filtered department listing (`electronics` / `accessories`) |
-| `/product/:id` | `ProductDetailPage` | Detailed product specifications, quantity stepper, and reviews |
-| `/wishlist` | `WishlistPage` | Saved items with one-click "Move to Bag" |
-| `/cart` | `CartPage` | Full shopping bag with item steppers and order breakdown |
-| `/checkout` | `CheckoutPage` | Customer information verification and submission form |
-| `/confirmation` | `ConfirmationPage` | Order receipt with reference `CF-YYYYMMDD-XXXX` and reset |
-| `/order-confirmed` | `ConfirmationPage` | Canonical alias route for order confirmation |
-
----
-
-## 12. Testing Strategy
-Our SDET testing architecture follows the Test Pyramid methodology:
-1. **Static Analysis:** Strict TypeScript (`tsc --noEmit`) and ESLint (`--max-warnings 0`).
-2. **Page Object Model (POM):** Centralized locator and action definitions in [`CartFlowPage.ts`](file:///c:/Users/HEMANTH/Documents/SDETintern/tests/e2e/pages/CartFlowPage.ts).
-3. **Deterministic Assertions:** Asserting customer-visible state with zero fixed timeouts (`page.waitForTimeout` is strictly prohibited).
-4. **Test Isolation:** Dedicated `beforeEach` hooks clearing `localStorage` to guarantee independent test runs.
-5. **Cross-Browser Coverage:** Validated on Chromium (Google Chrome) and Microsoft Edge.
-
----
-
-## 13. Test Execution Commands
-- **Run Complete Test Suite (55 tests):**
-  ```bash
-  npm run test:e2e
-  ```
-- **Run Specific Test Suites:**
-  ```bash
-  npx playwright test tests/e2e/checkout.spec.ts
-  npx playwright test tests/e2e/discovery.spec.ts
-  npx playwright test tests/e2e/pdp.spec.ts
-  npx playwright test tests/e2e/accessibility.spec.ts
-  npx playwright test tests/e2e/quality-engineering.spec.ts
-  ```
-- **Run on Microsoft Edge Channel:**
-  ```bash
-  npx playwright test tests/e2e/checkout.spec.ts --project=msedge
-  ```
-- **View HTML Test Report:**
-  ```bash
-  npm run test:report
-  ```
-
----
-
-## 14. Automated Test Coverage
-55 automated scenarios executed and passed with 100% success rate:
-- **Mandatory Hackathon Scenarios (4 tests):**
-  - Mandatory 1: Successful checkout producing visible confirmation and unique reference `CF-YYYYMMDD-XXXX`.
-  - Mandatory 2A: Missing customer name blocks checkout and displays accessible alert.
-  - Mandatory 2B: Whitespace-only name blocks checkout and preserves customer input.
-  - Mandatory 3: Changing quantity updates line total and order total deterministically.
-- **High-Value Checkout & Regression (10 tests):**
-  - REG-01 through REG-10: Empty cart prevention, item removal, stepper lower bound ($\ge 1$), duplicate row prevention, rapid double-click concurrency lock, whitespace trimming, clean order reset, multi-page routing, and state persistence.
-- **Global Search, Wishlist & Discovery (19 tests):**
-  - SEARCH-01 to SEARCH-06: Name search, category search, whitespace handling, no-results fallback, input clearing, keyboard autocomplete.
-  - WISH-01 to WISH-05: Live count updates, removal, duplicate prevention, persistence across reloads, move-to-bag.
-  - CAT-01 to CAT-04: Department counts, slug filtering, invalid slug fallback, breadcrumbs.
-  - EXP-01 to EXP-04: Price sorting, filter chips, filter clearing, query param persistence.
-- **Product Detail Pages (9 tests):**
-  - PDP-01 to PDP-09: Direct SKU loading, exact prices, breadcrumb navigation, quantity stepper subtotal calculation, multi-quantity add to bag, wishlist toggle, invalid product ID handling, demo feedback submission, catalog card navigation.
-- **Accessibility & Semantics (7 tests):**
-  - A11Y-01 to A11Y-07: Skip to content keyboard navigation, H1 hierarchy on all pages, combobox ARIA pattern, accessible button names, form label and alert associations, live announcement regions, cart drawer Escape-key behavior.
-- **Quality Engineering & Console Hygiene (6 tests):**
-  - QE-01 to QE-06: Zero console errors across all 11 routes, upper boundary limit ($Q \le 10$), cart reload persistence, rapid sequential additions, whitespace query safety, and URL integrity.
-
----
-
-## 15. Manual Test Scenarios
-- **Test M01 – Empty Cart Checkout:**
-  - *Steps:* Navigate to `/checkout` with empty cart, enter "Jane Doe", click "Place Order".
-  - *Result:* **PASS.** Order blocked; visible alert displayed; customer name preserved; no confirmation rendered.
-- **Test M02 – Rapid Double-Click Protection:**
-  - *Steps:* Add Aero Headphones, enter "Jane Doe", click "Place Order" twice within 50ms.
-  - *Result:* **PASS.** Exactly one confirmation receipt; unique reference generated; single settlement of ₹1,499.
-- **Test M03 – Cross-Device Viewport Verification:**
-  - *Devices Verified:* Desktop (1440x900, 1280x800), Tablet (768x1024), Mobile (375x812, 390x844).
-  - *Result:* **PASS.** Zero horizontal overflow, responsive navigation, touch targets $\ge 44\text{px}$.
-
----
-
-## 16. Known Limitations
-1. **Client-Side Scope:** By project specification, there is no remote backend, database, or live payment gateway; all orders and feedback are persisted in client memory and `localStorage`.
-2. **Synthetic Catalog:** Exactly two fixed products are cataloged; mock catalog expansion is intentionally avoided to preserve hackathon evaluation rules.
-3. **Host Browser Environment:** Testing was executed against Chromium (Google Chrome) and Microsoft Edge. Dedicated Firefox and WebKit binaries were not installed in the Windows evaluation sandbox; their status is documented honestly in [`docs/TEST_PLAN.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/TEST_PLAN.md).
-
----
-
-## 17. Future Enhancements
-- Integration with standard headless CMS or backend GraphQL API for dynamic catalog queries.
-- Payment gateway integration (Stripe / Razorpay) in sandbox mode.
-- Service Worker integration for offline PWA shopping capabilities.
-- Automated Lighthouse CI performance scoring in CI/CD pipelines.
+- [`docs/ARCHITECTURE.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/ARCHITECTURE.md) — Technical architecture, integer math, and state machines.
+- [`docs/PRODUCT_CATALOGUE.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/PRODUCT_CATALOGUE.md) — Complete 30-product catalogue breakdown across 6 collections.
+- [`docs/ROUTE_REFERENCE.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/ROUTE_REFERENCE.md) — Comprehensive guide to 12 marketplace routes and 4 legacy aliases.
+- [`docs/CARTFLOW_4_FEATURES.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/CARTFLOW_4_FEATURES.md) — Feature matrix and functional specifications.
+- [`docs/TEST_PLAN.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/TEST_PLAN.md) — Master test strategy covering all 73 automated test scenarios.
+- [`docs/TEST_EXECUTION_REPORT.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/TEST_EXECUTION_REPORT.md) — Detailed execution log and timing metrics.
+- [`docs/CARTFLOW_4_RELEASE_REPORT.md`](file:///c:/Users/HEMANTH/Documents/SDETintern/docs/CARTFLOW_4_RELEASE_REPORT.md) — Final audit, security verification, and release summary.

@@ -9,15 +9,24 @@ interface ProductGridProps {
   onAddToCart: (product: Product) => void;
   title?: string;
   subtitle?: string;
+  columns?: 2 | 3 | 4;
 }
 
 export const ProductGrid: React.FC<ProductGridProps> = ({
   products,
   getItemQuantity,
   onAddToCart,
-  title = "Curated Synthetic Collection",
-  subtitle = "Two verified essentials crafted for daily performance, durability, and elegance."
+  title = "Curated Demonstration Catalogue",
+  subtitle = "Precision-engineered essentials crafted for daily performance, durability, and elegance.",
+  columns = 3
 }) => {
+  const gridColClass =
+    columns === 2
+      ? 'grid-cols-1 md:grid-cols-2'
+      : columns === 4
+      ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+      : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+
   return (
     <section aria-labelledby="catalog-heading" className="w-full">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-slate-200 gap-4">
@@ -34,11 +43,11 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           </p>
         </div>
         <span className="self-start sm:self-auto text-xs font-bold px-3.5 py-1 rounded-full bg-slate-100 text-meridian-950 border border-slate-200">
-          {products.length} Verified Products
+          {products.length} {products.length === 1 ? 'Product' : 'Products'}
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8" data-testid="product-catalog-grid">
+      <div className={`grid ${gridColClass} gap-6 sm:gap-8`} data-testid="product-catalog-grid">
         {products.map((product) => (
           <ProductCard
             key={product.id}

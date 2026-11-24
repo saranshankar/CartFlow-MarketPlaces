@@ -4,6 +4,7 @@ import { Plus, Check, Heart, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { Product } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import { useWishlist } from '../../context/WishlistContext';
+import { ProductArtwork } from './ProductArtwork';
 
 interface ProductCardProps {
   product: Product;
@@ -24,75 +25,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onAddToCart(product);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
-  };
-
-  // Bespoke Meridian Marketplace Vector Illustrations (zero network dependency)
-  const renderProductVisual = () => {
-    if (product.id === 'prod-aero-headphones') {
-      return (
-        <svg
-          viewBox="0 0 240 240"
-          className="w-full h-full object-contain p-6 text-meridian-900 transition-transform duration-500 group-hover:scale-105"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <circle cx="120" cy="120" r="85" fill="#F1F5F9" />
-          {/* Headband Arc */}
-          <path
-            d="M60 135 C60 65 180 65 180 135"
-            stroke="#0F1E36"
-            strokeWidth="10"
-            strokeLinecap="round"
-          />
-          <path
-            d="M75 110 C75 80 165 80 165 110"
-            stroke="#00A3C4"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-            opacity="0.9"
-          />
-          {/* Left Cushion */}
-          <rect x="42" y="115" width="34" height="65" rx="17" fill="#172B4D" stroke="#0F1E36" strokeWidth="3" />
-          <rect x="48" y="125" width="22" height="45" rx="11" fill="#E2E8F0" />
-          {/* Right Cushion */}
-          <rect x="164" y="115" width="34" height="65" rx="17" fill="#172B4D" stroke="#0F1E36" strokeWidth="3" />
-          <rect x="170" y="125" width="22" height="45" rx="11" fill="#E2E8F0" />
-          {/* Cyan Pivot Accents */}
-          <circle cx="59" cy="116" r="4" fill="#00A3C4" />
-          <circle cx="181" cy="116" r="4" fill="#00A3C4" />
-        </svg>
-      );
-    }
-
-    // Urban Everyday Backpack
-    return (
-      <svg
-        viewBox="0 0 240 240"
-        className="w-full h-full object-contain p-6 text-meridian-900 transition-transform duration-500 group-hover:scale-105"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <circle cx="120" cy="120" r="85" fill="#F1F5F9" />
-        {/* Top Handle */}
-        <path d="M100 62 C100 45 140 45 140 62" stroke="#00A3C4" strokeWidth="6" strokeLinecap="round" />
-        {/* Main Canvas Body */}
-        <path
-          d="M70 85 C70 68 170 68 170 85 L176 190 C176 198 168 205 160 205 L80 205 C72 205 64 198 64 190 Z"
-          fill="#0F1E36"
-          stroke="#0A1424"
-          strokeWidth="3"
-        />
-        {/* Front Flap Pocket */}
-        <rect x="80" y="125" width="80" height="60" rx="10" fill="#172B4D" stroke="#00A3C4" strokeWidth="2" />
-        {/* Cyan Stitching Detail */}
-        <line x1="88" y1="145" x2="152" y2="145" stroke="#38BDF8" strokeWidth="2" strokeDasharray="4 3" />
-        {/* Fasteners */}
-        <circle cx="92" cy="100" r="3" fill="#00A3C4" />
-        <circle cx="148" cy="100" r="3" fill="#00A3C4" />
-      </svg>
-    );
   };
 
   return (
@@ -129,7 +61,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           className="w-full h-full flex items-center justify-center"
           aria-label={`View product details for ${product.name}`}
         >
-          {renderProductVisual()}
+          <ProductArtwork
+            product={product}
+            className="w-full h-full object-contain p-6 text-meridian-900 transition-transform duration-500 group-hover:scale-105"
+          />
         </Link>
       </div>
 

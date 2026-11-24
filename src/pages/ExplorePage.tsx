@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { ShoppingBag, ArrowRight, ArrowUpDown, X, Search, Sparkles } from 'lucide-react';
+import { ShoppingBag, ArrowRight, ArrowUpDown, X, Search, Sparkles, Filter } from 'lucide-react';
 import { ProductCard } from '../components/catalog/ProductCard';
 import { useCartContext } from '../context/CartContext';
 import { SearchOptions, searchProducts } from '../utils/search';
@@ -12,15 +12,22 @@ export const ExplorePage: React.FC = () => {
   const query = searchParams.get('q') || '';
   const category = searchParams.get('category') || searchParams.get('dept') || 'all';
   const sortBy = (searchParams.get('sort') as SearchOptions['sortBy']) || 'featured';
+  const minPriceStr = searchParams.get('minPrice') || '';
+  const maxPriceStr = searchParams.get('maxPrice') || '';
+
+  const minPrice = minPriceStr ? Number(minPriceStr) : undefined;
+  const maxPrice = maxPriceStr ? Number(maxPriceStr) : undefined;
 
   // Filter products using pure search utility
   const products = useMemo(() => {
     return searchProducts({
       query,
       category,
+      minPrice,
+      maxPrice,
       sortBy,
     });
-  }, [query, category, sortBy]);
+  }, [query, category, minPrice, maxPrice, sortBy]);
 
   const updateParam = (key: string, value: string) => {
     const next = new URLSearchParams(searchParams);
@@ -36,7 +43,13 @@ export const ExplorePage: React.FC = () => {
     setSearchParams(new URLSearchParams());
   };
 
-  const hasActiveFilters = Boolean(query || (category && category !== 'all') || (sortBy && sortBy !== 'featured'));
+  const hasActiveFilters = Boolean(
+    query ||
+      (category && category !== 'all') ||
+      (sortBy && sortBy !== 'featured') ||
+      minPriceStr ||
+      maxPriceStr
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10 animate-fadeIn" data-testid="explore-page">
@@ -51,7 +64,7 @@ export const ExplorePage: React.FC = () => {
             Curated Essentials
           </h1>
           <p className="text-sm text-slate-500 font-normal">
-            Browse our verified marketplace collection. Filter by department or sort by price.
+            Browse our complete 30-item multi-collection marketplace. Filter by department or sort by price.
           </p>
         </div>
 
@@ -72,61 +85,139 @@ export const ExplorePage: React.FC = () => {
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
             <option value="name-asc">Name: A to Z</option>
+            <option value="name-desc">Name: Z to A</option>
+            <option value="newest">Newest Arrivals</option>
           </select>
         </div>
       </div>
 
-      {/* Filter Chips Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      {/* Filter Bar: Collections Pills & Price Inputs */}
+      <div className="space-y-4">
         {/* Category Pills */}
-        <div className="flex flex-wrap items-center gap-2 text-xs font-bold" data-testid="category-filter-chips">
-          <button
-            type="button"
-            onClick={() => updateParam('category', 'all')}
-            className={`px-3.5 py-1.5 rounded-full transition-all border ${
-              category === 'all'
-                ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
-                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
-            }`}
-          >
-            All Products
-          </button>
-          <button
-            type="button"
-            onClick={() => updateParam('category', 'electronics')}
-            className={`px-3.5 py-1.5 rounded-full transition-all border ${
-              category.toLowerCase().includes('electronics')
-                ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
-                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
-            }`}
-          >
-            Electronics & Audio
-          </button>
-          <button
-            type="button"
-            onClick={() => updateParam('category', 'accessories')}
-            className={`px-3.5 py-1.5 rounded-full transition-all border ${
-              category.toLowerCase().includes('accessories')
-                ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
-                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
-            }`}
-          >
-            Bags & Accessories
-          </button>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-bold" data-testid="category-filter-chips">
+            <button
+              type="button"
+              onClick={() => updateParam('category', 'all')}
+              className={`px-3.5 py-1.5 rounded-full transition-all border ${
+                category === 'all'
+                  ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              All Products
+            </button>
+            <button
+              type="button"
+              onClick={() => updateParam('category', 'electronics')}
+              className={`px-3.5 py-1.5 rounded-full transition-all border ${
+                category.toLowerCase().includes('electronics')
+                  ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              Electronics &amp; Audio
+            </button>
+            <button
+              type="button"
+              onClick={() => updateParam('category', 'fashion')}
+              className={`px-3.5 py-1.5 rounded-full transition-all border ${
+                category.toLowerCase().includes('fashion')
+                  ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              Fashion &amp; Apparel
+            </button>
+            <button
+              type="button"
+              onClick={() => updateParam('category', 'home-living')}
+              className={`px-3.5 py-1.5 rounded-full transition-all border ${
+                category.toLowerCase().includes('home')
+                  ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              Home &amp; Living
+            </button>
+            <button
+              type="button"
+              onClick={() => updateParam('category', 'accessories')}
+              className={`px-3.5 py-1.5 rounded-full transition-all border ${
+                category.toLowerCase().includes('accessories')
+                  ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              Bags &amp; Accessories
+            </button>
+            <button
+              type="button"
+              onClick={() => updateParam('category', 'fitness-lifestyle')}
+              className={`px-3.5 py-1.5 rounded-full transition-all border ${
+                category.toLowerCase().includes('fitness')
+                  ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              Fitness &amp; Lifestyle
+            </button>
+            <button
+              type="button"
+              onClick={() => updateParam('category', 'stationery')}
+              className={`px-3.5 py-1.5 rounded-full transition-all border ${
+                category.toLowerCase().includes('stationery')
+                  ? 'bg-meridian-900 text-white border-meridian-900 shadow-warm-sm'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              Stationery &amp; Writing
+            </button>
+          </div>
+
+          {/* Clear Filters CTA */}
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={clearAllFilters}
+              data-testid="clear-all-filters-btn"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 transition-colors py-1.5 px-3 rounded-lg border border-red-200 hover:bg-red-50"
+            >
+              <X className="w-3.5 h-3.5" />
+              <span>Clear Filters</span>
+            </button>
+          )}
         </div>
 
-        {/* Clear Filters CTA */}
-        {hasActiveFilters && (
-          <button
-            type="button"
-            onClick={clearAllFilters}
-            data-testid="clear-all-filters-btn"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 transition-colors py-1 px-3 rounded-lg border border-red-200 hover:bg-red-50"
-          >
-            <X className="w-3.5 h-3.5" />
-            <span>Clear Filters</span>
-          </button>
-        )}
+        {/* Price Range Filter Inputs */}
+        <div className="flex flex-wrap items-center gap-3 pt-2 text-xs">
+          <span className="font-bold text-slate-700 flex items-center gap-1">
+            <Filter className="w-3.5 h-3.5 text-cyan-600" />
+            Price Filter:
+          </span>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              placeholder="Min ₹"
+              value={minPriceStr}
+              onChange={(e) => updateParam('minPrice', e.target.value)}
+              className="w-24 px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              aria-label="Filter by minimum price"
+            />
+            <span className="text-slate-400">to</span>
+            <input
+              type="number"
+              placeholder="Max ₹"
+              value={maxPriceStr}
+              onChange={(e) => updateParam('maxPrice', e.target.value)}
+              className="w-24 px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              aria-label="Filter by maximum price"
+            />
+          </div>
+          <span className="text-slate-500">
+            Showing <strong>{products.length}</strong> items
+          </span>
+        </div>
       </div>
 
       {/* Active Search Notification Banner */}
@@ -154,7 +245,10 @@ export const ExplorePage: React.FC = () => {
 
       {/* Product Grid or No-Results State */}
       {products.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8" data-testid="product-catalog-grid">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+          data-testid="product-catalog-grid"
+        >
           {products.map((product) => (
             <ProductCard
               key={product.id}
@@ -187,7 +281,7 @@ export const ExplorePage: React.FC = () => {
               data-testid="no-results-clear-btn"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-meridian-900 text-white text-xs font-bold uppercase tracking-wider shadow-warm-sm"
             >
-              <span>Reset Search & Filters</span>
+              <span>Reset Search &amp; Filters</span>
             </button>
           </div>
         </div>
@@ -213,7 +307,7 @@ export const ExplorePage: React.FC = () => {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-meridian-900 hover:bg-meridian-950 text-white text-xs uppercase tracking-wider font-bold transition-all shadow-warm-sm active:scale-95"
           >
             <ShoppingBag className="w-4 h-4 text-cyan-400" aria-hidden="true" />
-            <span>Review Bag & Checkout</span>
+            <span>Review Bag &amp; Checkout</span>
             <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
@@ -221,3 +315,5 @@ export const ExplorePage: React.FC = () => {
     </div>
   );
 };
+
+export default ExplorePage;

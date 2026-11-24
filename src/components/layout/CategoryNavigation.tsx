@@ -1,19 +1,37 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Grid, Headphones, Briefcase, Compass, Shield, ShoppingBag, CreditCard } from 'lucide-react';
+import {
+  Grid,
+  Headphones,
+  Shirt,
+  Home,
+  Briefcase,
+  Activity,
+  PenTool,
+  Compass,
+  Shield,
+  ShoppingBag,
+  CreditCard,
+  MessageSquare
+} from 'lucide-react';
 
 export const CategoryNavigation: React.FC = () => {
   const location = useLocation();
 
   const links = [
-    { name: 'All Categories', path: '/categories', icon: Grid },
+    { name: 'Departments', path: '/categories', icon: Grid },
     { name: 'Electronics & Audio', path: '/category/electronics', icon: Headphones },
+    { name: 'Fashion', path: '/collection/fashion', icon: Shirt },
+    { name: 'Home & Living', path: '/collection/home-living', icon: Home },
     { name: 'Bags & Accessories', path: '/category/accessories', icon: Briefcase },
+    { name: 'Fitness & Lifestyle', path: '/collection/fitness-lifestyle', icon: Activity },
+    { name: 'Stationery', path: '/collection/stationery', icon: PenTool },
     { name: 'Explore', path: '/explore', icon: Compass },
     { name: 'Collection', path: '/shop', icon: null }, // Required for Playwright REG-09
     { name: 'Cart', path: '/cart', icon: ShoppingBag }, // Required for Playwright REG-09
     { name: 'Checkout', path: '/checkout', icon: CreditCard }, // Required for Playwright REG-09
-    { name: 'About', path: '/explore', icon: Shield },
+    { name: 'About', path: '/about', icon: Shield },
+    { name: 'Contact', path: '/contact', icon: MessageSquare }
   ];
 
   const isActive = (path: string) => {

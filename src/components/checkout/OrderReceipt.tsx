@@ -18,6 +18,7 @@ export const OrderReceipt: React.FC<OrderReceiptProps> = ({
       data-testid="order-confirmation-view"
       className="max-w-2xl mx-auto rounded-3xl bg-white border border-warmgrey p-6 sm:p-10 shadow-warm-lg animate-fadeIn text-charcoal"
     >
+      <div data-testid="order-receipt">
       {/* Success Badge */}
       <div className="flex flex-col items-center text-center pb-8 border-b border-warmgrey/80">
         <div className="w-16 h-16 rounded-full bg-naturalgreen/10 border-2 border-naturalgreen/30 flex items-center justify-center text-naturalgreen mb-4 shadow-warm-sm">
@@ -131,6 +132,7 @@ export const OrderReceipt: React.FC<OrderReceiptProps> = ({
           <RotateCcw className="w-4 h-4 text-sand" aria-hidden="true" />
           <span>Start New Order</span>
         </button>
+      </div>
       </div>
     </div>
   );

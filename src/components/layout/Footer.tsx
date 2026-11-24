@@ -79,15 +79,30 @@ export const Footer: React.FC = () => {
             <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-display">
               Marketplace Hub
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm">
+            <ul className="space-y-2 text-xs sm:text-sm">
               <li>
                 <Link to="/" className="text-slate-300 hover:text-white transition-colors">
                   Marketplace Home
                 </Link>
               </li>
               <li>
-                <Link to="/shop" className="text-slate-300 hover:text-white transition-colors">
-                  Explore Collection
+                <Link to="/explore" className="text-slate-300 hover:text-white transition-colors">
+                  Explore 30 Products
+                </Link>
+              </li>
+              <li>
+                <Link to="/collections" className="text-slate-300 hover:text-white transition-colors">
+                  Curated Collections
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-slate-300 hover:text-white transition-colors">
+                  About CartFlow 4.0
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-slate-300 hover:text-white transition-colors">
+                  Contact & Support
                 </Link>
               </li>
               <li>
@@ -108,20 +123,45 @@ export const Footer: React.FC = () => {
             <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-display">
               Departments
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm">
+            <ul className="space-y-2 text-xs sm:text-sm">
               <li>
-                <Link to="/category/electronics" className="text-slate-300 hover:text-white transition-colors">
+                <Link to="/collection/electronics" className="text-slate-300 hover:text-white transition-colors">
                   Electronics & Audio
                 </Link>
               </li>
               <li>
-                <Link to="/category/accessories" className="text-slate-300 hover:text-white transition-colors">
+                <Link to="/collection/fashion" className="text-slate-300 hover:text-white transition-colors">
+                  Fashion & Apparel
+                </Link>
+              </li>
+              <li>
+                <Link to="/collection/home-living" className="text-slate-300 hover:text-white transition-colors">
+                  Home & Living
+                </Link>
+              </li>
+              <li>
+                <Link to="/collection/bags-accessories" className="text-slate-300 hover:text-white transition-colors">
                   Bags & Accessories
+                </Link>
+              </li>
+              <li>
+                <Link to="/collection/fitness-lifestyle" className="text-slate-300 hover:text-white transition-colors">
+                  Fitness & Lifestyle
+                </Link>
+              </li>
+              <li>
+                <Link to="/collection/stationery" className="text-slate-300 hover:text-white transition-colors">
+                  Stationery & Writing
                 </Link>
               </li>
               <li>
                 <Link to="/categories" className="text-slate-300 hover:text-white transition-colors">
                   All Departments
+                </Link>
+              </li>
+              <li>
+                <Link to="/collections" className="text-slate-300 hover:text-white transition-colors">
+                  All Collections
                 </Link>
               </li>
             </ul>
